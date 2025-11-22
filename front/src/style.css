@@ -100,17 +100,189 @@
     width: 100%;
     }
 
+    /* ==================== Banner Carousel Styles ==================== */
+    .banner-container {
+        position: relative;
+        width: 100%;
+        height: 60vh;
+        overflow: hidden;
+    }
+
+    .banner-track {
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+
+    .banner-track.transitioning {
+        transition: transform 0.8s ease-in-out;
+    }
+
+    .banner-slide {
+        min-width: 100%;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .banner-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        opacity: 0.5;
+    }
+
+    .banner-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        padding-bottom: 60px;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 60%);
+    }
+
+    /* Main title for the first slide (City of Madison) */
+    .banner-title-main {
+        font-family: 'Abril Fatface', cursive;
+        font-size: 64px;
+        color: white;
+        letter-spacing: 4px;
+        text-align: center;
+    }
+
+    /* Smaller title for data slides */
+    .banner-title {
+        font-family: 'Expletus Sans', cursive;
+        font-size: 28px;
+        color: white;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .banner-subtitle {
+        font-family: 'Abril Fatface', cursive;
+        font-size: 56px;
+        color: white;
+        letter-spacing: 4px;
+        text-align: center;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Arrow navigation */
+    .banner-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    .banner-arrow:hover {
+        background-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .banner-arrow-left {
+        left: 30px;
+    }
+
+    .banner-arrow-right {
+        right: 30px;
+    }
+
+    /* Dot indicators */
+    .banner-dots {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 12px;
+        z-index: 10;
+    }
+
+    .banner-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid white;
+        background-color: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 0;
+    }
+
+    .banner-dot:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .banner-dot.active {
+        background-color: white;
+    }
+
+    /* Responsive styles for banner */
+    @media (max-width: 768px) {
+        .banner-title-main {
+            font-size: 40px;
+        }
+
+        .banner-title {
+            font-size: 20px;
+        }
+
+        .banner-subtitle {
+            font-size: 36px;
+        }
+
+        .banner-overlay {
+            padding-bottom: 40px;
+        }
+
+        .banner-arrow {
+            width: 40px;
+            height: 40px;
+        }
+
+        .banner-arrow-left {
+            left: 15px;
+        }
+
+        .banner-arrow-right {
+            right: 15px;
+        }
+
+        .banner-dots {
+            bottom: 15px;
+        }
+
+        .banner-dot {
+            width: 10px;
+            height: 10px;
+        }
+    }
     /* ==================== Initial Section Styles ==================== */
     .initial-section {
     width: 100%;
     padding-top: 76px;
-    }
-
-    .initial-image-container {
-    position: relative;
-    width: 100%;
-    height: 60vh;
-    overflow: hidden;
     }
 
     .initial-image {
@@ -119,19 +291,6 @@
     opacity:0.5;
     object-fit: cover;
     object-position: center;
-    }
-
-    .initial-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 40px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, transparent 50%);
     }
 
     .initial-title {
@@ -690,9 +849,9 @@
     }
 
     .about-content {
-    padding-top: 120px;
+    padding-top: 150px;
     max-width: 1200px;
-    margin: 0 auto;
+    margin-left: 120px;
     padding-left: 40px;
     padding-right: 40px;
     }
@@ -718,9 +877,9 @@
     }
 
     .contact-content {
-    padding-top: 120px;
+    padding-top: 150px;
     max-width: 1200px;
-    margin: 0 auto;
+    margin-left: 120px;
     padding-left: 40px;
     padding-right: 40px;
     }
@@ -739,32 +898,140 @@
     line-height: 1.8;
     }
 
+    /* Back Button */
+    .back-button {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: none;
+        border: none;
+        font-family: 'Expletus Sans', cursive;
+        font-size: 16px;
+        color: #163760;
+        cursor: pointer;
+        padding: 10px 16px;
+        transition: all 0.2s ease;
+        z-index: 100;
+    }
+
+    .back-button:hover {
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .back-button span {
+        font-weight: 500;
+    }
+
     /* ==================== FAQ Page Styles ==================== */
+    /* Replace existing FAQ styles in your style.css */
+
     .faq-container {
-    min-height: 100vh;
-    background-color: white;
+        min-height: 100vh;
+        background-color: white;
     }
 
     .faq-content {
-    padding-top: 120px;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding-left: 40px;
-    padding-right: 40px;
+        padding-top: 150px;
+        max-width: 1200px;
+        margin: 0;
+        padding-left: 120px;
+        padding-right: 60px;
+        padding-bottom: 60px;
     }
 
     .faq-content h1 {
-    font-family: 'Expletus Sans', cursive;
-    font-size: 48px;
-    color: black;
-    margin-bottom: 30px;
+        font-family: 'Expletus Sans', cursive;
+        font-size: 48px;
+        color: black;
+        margin-bottom: 50px;
     }
 
-    .faq-content p {
-    font-family: 'Expletus Sans', cursive;
-    font-size: 20px;
-    color: black;
-    line-height: 1.8;
+    .faq-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .faq-item {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .faq-question {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 25px 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s ease;
+    }
+
+    .faq-question span {
+        font-family: 'Expletus Sans', cursive;
+        font-size: 16px;
+        font-weight: 500;
+        color: black;
+        letter-spacing: 1px;
+    }
+
+    .faq-question:hover span {
+        color: #163760;
+    }
+
+    .faq-icon {
+        color: #163760;
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+    }
+
+    .faq-question.active .faq-icon {
+        transform: rotate(180deg);
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+
+    .faq-answer.open {
+        max-height: 500px;
+        padding-bottom: 25px;
+    }
+
+    .faq-answer p {
+        font-family: 'Expletus Sans', cursive;
+        font-size: 16px;
+        color: #555;
+        line-height: 1.8;
+        padding-right: 40px;
+    }
+
+    /* Responsive styles for FAQ */
+    @media (max-width: 768px) {
+        .faq-content {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .faq-content h1 {
+            font-size: 32px;
+        }
+
+        .faq-question span {
+            font-size: 14px;
+        }
+
+        .faq-answer p {
+            font-size: 14px;
+            padding-right: 20px;
+        }
     }
 
     /* ==================== Full Data Page Styles ==================== */
@@ -774,13 +1041,13 @@
     }
 
     .fulldata-content {
-    padding-top: 120px;
+    padding-top: 150px;
     max-width: 1400px;
     margin: 0 auto;
     padding-left: 60px;
     padding-right: 60px;
     padding-bottom: 60px;
-    }
+}
 
     .fulldata-header {
     display: flex;

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Search, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
 import MenuBar from '../components/MenuBar';
 
 const FullData = () => {
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [activeSearch, setActiveSearch] = useState('');
     const [filteredData, setFilteredData] = useState([]);
@@ -104,6 +105,16 @@ const FullData = () => {
         }
     };
 
+    const handleBackClick = () => {
+        navigate('/');
+        setTimeout(() => {
+            const dashboardSection = document.querySelector('.dashboard-section');
+            if (dashboardSection) {
+                dashboardSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    };
+
     return (
         <div className="fulldata-container">
         <MenuBar />
@@ -189,6 +200,11 @@ const FullData = () => {
             </div>
             )}
         </div>
+
+        <button className="back-button" onClick={handleBackClick}>
+            <ArrowLeft size={20} />
+            <span>Back to Dashboard</span>
+        </button>
         </div>
     );
 };

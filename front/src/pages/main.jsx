@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import MenuBar from '../components/MenuBar';
+import Banner from '../components/Banner';
 import Dashboard from '../components/Dashboard';
 import Map from '../components/Map';
 
 const Main = () => {
     const navigate = useNavigate();
     const [initialSearchQuery, setInitialSearchQuery] = useState('');
-    const [isSearchFocused, setIsSearchFocused] = useState(false);
     const targetNumber = 56; // This will come from backend later
     const [displayNumber, setDisplayNumber] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
@@ -85,23 +85,15 @@ const Main = () => {
         }
     };
 
-    // Determine search box classes
-    const searchBoxClasses = `initial-search-box${initialSearchQuery ? ' has-content' : ''}${isSearchFocused ? ' is-focused' : ''}`;
-
     return (
         <div className="home-container">
             <MenuBar />
             
-            {/* Initial Section */}
+            {/* Initial Section with Banner Carousel */}
             <div className="initial-section">
-                <div className="initial-image-container">
-                    <img src="/assets/madison.png" alt="City of Madison" className="initial-image" />
-                    <div className="initial-overlay">
-                        <h1 className="initial-title">CITY OF MADISON</h1>
-                    </div>
-                </div>
+                <Banner />
                 <div className="initial-search-container">
-                    <div className={searchBoxClasses}>
+                    <div className="initial-search-box">
                         <Search size={20} className="initial-search-icon" />
                         <input
                             type="text"
@@ -109,8 +101,6 @@ const Main = () => {
                             value={initialSearchQuery}
                             onChange={(e) => setInitialSearchQuery(e.target.value)}
                             onKeyPress={handleInitialKeyPress}
-                            onFocus={() => setIsSearchFocused(true)}
-                            onBlur={() => setIsSearchFocused(false)}
                             className="initial-search-input"
                         />
                     </div>
