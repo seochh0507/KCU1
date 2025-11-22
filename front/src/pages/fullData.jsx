@@ -13,31 +13,30 @@ const FullData = () => {
 
     // Sample data - will be replaced with backend data
     const [tableData] = useState([
-        { caseId: '2025-00447776', date: '2025-11-13', type: 'THEFT', time: '18:30', location: '123 State Street, Madison, WI' },
-        { caseId: '2025-00447890', date: '2025-11-13', type: 'TRAFFIC', time: '14:20', location: '456 University Ave, Madison, WI' },
-        { caseId: '2025-00448012', date: '2025-11-12', type: 'PROPERTY', time: '22:15', location: '789 Park Street, Madison, WI' },
-        { caseId: '2025-00448156', date: '2025-11-12', type: 'VIOLENT', time: '19:45', location: '321 Johnson Street, Madison, WI' },
-        { caseId: '2025-00448234', date: '2025-11-11', type: 'THEFT', time: '16:30', location: '654 Langdon Street, Madison, WI' },
-        { caseId: '2025-00448345', date: '2025-11-11', type: 'DRUG/ALCOHOL', time: '23:15', location: '987 Gorham Street, Madison, WI' },
-        { caseId: '2025-00448456', date: '2025-11-10', type: 'TRAFFIC', time: '08:45', location: '147 East Washington Ave, Madison, WI' },
-        { caseId: '2025-00448567', date: '2025-11-10', type: 'FIRE', time: '12:00', location: '258 West Mifflin Street, Madison, WI' },
-        { caseId: '2025-00448678', date: '2025-11-09', type: 'EMERGENCY', time: '03:30', location: '369 North Hamilton Street, Madison, WI' },
-        { caseId: '2025-00448789', date: '2025-11-09', type: 'FIRE', time: '17:00', location: '741 South Carroll Street, Madison, WI' },
-        { caseId: '2025-00448890', date: '2025-11-08', type: 'THEFT', time: '09:15', location: '852 East Main Street, Madison, WI' },
-        { caseId: '2025-00448901', date: '2025-11-08', type: 'PROPERTY', time: '14:00', location: '963 West Dayton Street, Madison, WI' },
-        { caseId: '2025-00449012', date: '2025-11-07', type: 'VIOLENT', time: '21:30', location: '147 North Lake Street, Madison, WI' },
-        { caseId: '2025-00449123', date: '2025-11-07', type: 'TRAFFIC', time: '07:45', location: '258 South Park Street, Madison, WI' },
-        { caseId: '2025-00449234', date: '2025-11-06', type: 'THEFT', time: '16:00', location: '369 East Johnson Street, Madison, WI' },
-        { caseId: '2025-00449345', date: '2025-11-06', type: 'EMERGENCY', time: '02:15', location: '741 West Gorham Street, Madison, WI' },
-        { caseId: '2025-00449456', date: '2025-11-05', type: 'FIRE', time: '11:30', location: '852 North Frances Street, Madison, WI' },
-        { caseId: '2025-00449567', date: '2025-11-05', type: 'DRUG/ALCOHOL', time: '22:00', location: '963 South Hamilton Street, Madison, WI' },
-        { caseId: '2025-00449678', date: '2025-11-04', type: 'PROPERTY', time: '15:45', location: '147 East Mifflin Street, Madison, WI' },
-        { caseId: '2025-00449789', date: '2025-11-04', type: 'THEFT', time: '10:30', location: '258 West Johnson Street, Madison, WI' },
-        { caseId: '2025-00449890', date: '2025-11-03', type: 'TRAFFIC', time: '18:15', location: '369 North Park Street, Madison, WI' },
-        { caseId: '2025-00449901', date: '2025-11-03', type: 'VIOLENT', time: '23:45', location: '741 South Lake Street, Madison, WI' },
+        { caseId: '1', date: '2025-11-13', type: 'THEFT', time: '18:30', location: '123 Madison, WI' },
+        { caseId: '2', date: '2025-11-13', type: 'TRAFFIC', time: '14:20', location: '456 Madison, WI' },
+        { caseId: '3', date: '2025-11-12', type: 'PROPERTY', time: '22:15', location: '789  Madison, WI' },
+        { caseId: '4', date: '2025-11-12', type: 'VIOLENT', time: '19:45', location: '321 Madison, WI' },
+        { caseId: '5', date: '2025-11-11', type: 'THEFT', time: '16:30', location: '654 Madison, WI' },
+        { caseId: '6', date: '2025-11-11', type: 'DRUG/ALCOHOL', time: '23:15', location: '987 Madison, WI' },
+        { caseId: '7', date: '2025-11-10', type: 'TRAFFIC', time: '08:45', location: '147 Madison, WI' },
+        { caseId: '8', date: '2025-11-10', type: 'FIRE', time: '12:00', location: '258  Madison, WI' },
+        { caseId: '9', date: '2025-11-09', type: 'EMERGENCY', time: '03:30', location: '369 Madison, WI' },
+        { caseId: '10', date: '2025-11-09', type: 'FIRE', time: '17:00', location: '741 Madison, WI' },
+        { caseId: '11', date: '2025-11-08', type: 'THEFT', time: '09:15', location: '852 Madison, WI' },
+        { caseId: '12', date: '2025-11-08', type: 'PROPERTY', time: '14:00', location: '963 Madison, WI' },
+        { caseId: '13', date: '2025-11-07', type: 'VIOLENT', time: '21:30', location: '147 Madison, WI' },
+        { caseId: '14', date: '2025-11-07', type: 'TRAFFIC', time: '07:45', location: '258 Madison, WI' },
+        { caseId: '15', date: '2025-11-06', type: 'THEFT', time: '16:00', location: '369 Madison, WI' },
+        { caseId: '16', date: '2025-11-06', type: 'EMERGENCY', time: '02:15', location: '741 Madison, WI' },
+        { caseId: '17', date: '2025-11-05', type: 'FIRE', time: '11:30', location: '852 Madison, WI' },
+        { caseId: '18', date: '2025-11-05', type: 'DRUG/ALCOHOL', time: '22:00', location: '963 Madison, WI' },
+        { caseId: '19', date: '2025-11-04', type: 'PROPERTY', time: '15:45', location: '147 Madison, WI' },
+        { caseId: '20', date: '2025-11-04', type: 'THEFT', time: '10:30', location: '258 Madison, WI' },
+        { caseId: '21', date: '2025-11-03', type: 'TRAFFIC', time: '18:15', location: '369 Madison, WI' },
+        { caseId: '22', date: '2025-11-03', type: 'VIOLENT', time: '23:45', location: '741 Madison, WI' },
     ]);
 
-    // Check for search query in URL on mount
     useEffect(() => {
         const urlSearch = searchParams.get('search');
         if (urlSearch) {

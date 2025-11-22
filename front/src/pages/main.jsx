@@ -1,67 +1,4 @@
-// import React, { useState, useEffect } from 'react';
-// import MenuBar from '../components/MenuBar';
-// import Dashboard from '../components/Dashboard';
-// import Map from '../components/Map';
-
-// const Main = () => {
-//     const targetNumber = 56;
-//     const [displayNumber, setDisplayNumber] = useState(0);
-//     const [isAnimating, setIsAnimating] = useState(false);
-
-//     useEffect(() => {
-//         setIsAnimating(true);
-        
-//         const duration = 2000; 
-//         const steps = 60;
-//         const increment = targetNumber / steps;
-//         let current = 0;
-        
-//         const timer = setInterval(() => {
-//         current += increment;
-//         if (current >= targetNumber) {
-//             setDisplayNumber(targetNumber);
-//             setIsAnimating(false);
-//             clearInterval(timer);
-//         } else {
-//             setDisplayNumber(Math.floor(current));
-//         }
-//         }, duration / steps);
-
-//         return () => clearInterval(timer);
-//     }, [targetNumber]);
-
-//     const scrollToDashboard = () => {
-//         const dashboardSection = document.querySelector('.dashboard-section');
-//         if (dashboardSection) {
-//         dashboardSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-//         }
-//     };
-
-//     return (
-//         <div className="home-container">
-//         <MenuBar />
-//         <div className="content">
-//             <h1 className="title">Total Incident Reports in the past week:</h1>
-//             <div className="number-container">
-//             <span className={`number ${isAnimating ? 'animating' : ''}`}>
-//                 {displayNumber}
-//             </span>
-//             </div>
-//             <div className="cta-container" onClick={scrollToDashboard} style={{ cursor: 'pointer' }}>
-//             <span className="arrow">˅</span>
-//             <p className="cta-text">Let's go look at the details!</p>
-//             </div>
-//         </div>
-        
-//         <Dashboard />
-//         <Map />
-//         </div>
-//     );
-// };
-
-// export default Main;
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import MenuBar from '../components/MenuBar';
@@ -70,95 +7,132 @@ import Map from '../components/Map';
 
 const Main = () => {
     const navigate = useNavigate();
-    const [heroSearchQuery, setHeroSearchQuery] = useState('');
+    const [initialSearchQuery, setInitialSearchQuery] = useState('');
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
     const targetNumber = 56; // This will come from backend later
     const [displayNumber, setDisplayNumber] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
+    const [hasAnimated, setHasAnimated] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const statsRef = useRef(null);
 
+    // Intersection Observer for scroll-triggered animation
     useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    // Only trigger number animation once
+                    if (!hasAnimated) {
+                        startNumberAnimation();
+                        setHasAnimated(true);
+                    }
+                } else {
+                    setIsVisible(false);
+                }
+            },
+            { threshold: 0.3 }
+        );
+
+        if (statsRef.current) {
+            observer.observe(statsRef.current);
+        }
+
+        return () => {
+            if (statsRef.current) {
+                observer.unobserve(statsRef.current);
+            }
+        };
+    }, [hasAnimated]);
+
+    const startNumberAnimation = () => {
         setIsAnimating(true);
+        setDisplayNumber(0);
         
-        // Animate number counting up
         const duration = 2000; // 2 seconds
         const steps = 60;
         const increment = targetNumber / steps;
         let current = 0;
-        
-        const timer = setInterval(() => {
-        current += increment;
-        if (current >= targetNumber) {
-            setDisplayNumber(targetNumber);
-            setIsAnimating(false);
-            clearInterval(timer);
-        } else {
-            setDisplayNumber(Math.floor(current));
-        }
-        }, duration / steps);
 
-        return () => clearInterval(timer);
-    }, [targetNumber]);
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= targetNumber) {
+                setDisplayNumber(targetNumber);
+                setIsAnimating(false);
+                clearInterval(timer);
+            } else {
+                setDisplayNumber(Math.floor(current));
+            }
+        }, duration / steps);
+    };
 
     const scrollToDashboard = () => {
         const dashboardSection = document.querySelector('.dashboard-section');
         if (dashboardSection) {
-        dashboardSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            dashboardSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
 
-    const handleHeroSearch = () => {
-        if (heroSearchQuery.trim()) {
-        navigate(`/fulldata?search=${encodeURIComponent(heroSearchQuery)}`);
+    const handleInitialSearch = () => {
+        if (initialSearchQuery.trim()) {
+            navigate(`/fulldata?search=${encodeURIComponent(initialSearchQuery)}`);
         }
     };
 
-    const handleHeroKeyPress = (e) => {
+    const handleInitialKeyPress = (e) => {
         if (e.key === 'Enter') {
-        handleHeroSearch();
+            handleInitialSearch();
         }
     };
+
+    // Determine search box classes
+    const searchBoxClasses = `initial-search-box${initialSearchQuery ? ' has-content' : ''}${isSearchFocused ? ' is-focused' : ''}`;
 
     return (
         <div className="home-container">
-        <MenuBar />
-        
-        {/* Hero Section */}
-        <div className="hero-section">
-            <div className="hero-image-container">
-            <img src="/assets/madison.png" alt="City of Madison" className="hero-image" />
-            <div className="hero-overlay">
-                <h1 className="hero-title">CITY OF MADISON</h1>
+            <MenuBar />
+            
+            {/* Initial Section */}
+            <div className="initial-section">
+                <div className="initial-image-container">
+                    <img src="/assets/madison.png" alt="City of Madison" className="initial-image" />
+                    <div className="initial-overlay">
+                        <h1 className="initial-title">CITY OF MADISON</h1>
+                    </div>
+                </div>
+                <div className="initial-search-container">
+                    <div className={searchBoxClasses}>
+                        <Search size={20} className="initial-search-icon" />
+                        <input
+                            type="text"
+                            placeholder="SEARCH"
+                            value={initialSearchQuery}
+                            onChange={(e) => setInitialSearchQuery(e.target.value)}
+                            onKeyPress={handleInitialKeyPress}
+                            onFocus={() => setIsSearchFocused(true)}
+                            onBlur={() => setIsSearchFocused(false)}
+                            className="initial-search-input"
+                        />
+                    </div>
+                </div>
             </div>
-            </div>
-            <div className="hero-search-container">
-            <div className="hero-search-box">
-                <Search size={20} className="hero-search-icon" />
-                <input
-                type="text"
-                placeholder="SEARCH"
-                value={heroSearchQuery}
-                onChange={(e) => setHeroSearchQuery(e.target.value)}
-                onKeyPress={handleHeroKeyPress}
-                className="hero-search-input"
-                />
-            </div>
-            </div>
-        </div>
 
-        <div className="content">
-            <h1 className="title">Total Incident Reports in the past week:</h1>
-            <div className="number-container">
-            <span className={`number ${isAnimating ? 'animating' : ''}`}>
-                {displayNumber}
-            </span>
+            {/* Stats Section with scroll animation */}
+            <div className={`content stats-section ${isVisible ? 'visible' : ''}`} ref={statsRef}>
+                <h1 className="title">Total Incident Reports in the past week:</h1>
+                <div className="number-container">
+                    <span className={`number ${isAnimating ? 'animating' : ''}`}>
+                        {displayNumber}
+                    </span>
+                </div>
+                <div className="cta-container" onClick={scrollToDashboard} style={{ cursor: 'pointer' }}>
+                    <span className="arrow">˅</span>
+                    <p className="cta-text">Let's go look at the details!</p>
+                </div>
             </div>
-            <div className="cta-container" onClick={scrollToDashboard} style={{ cursor: 'pointer' }}>
-            <span className="arrow">˅</span>
-            <p className="cta-text">Let's go look at the details!</p>
-            </div>
-        </div>
-        
-        <Dashboard />
-        <Map />
+
+            <Dashboard />
+            <Map />
         </div>
     );
 };
