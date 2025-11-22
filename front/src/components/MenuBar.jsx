@@ -15,9 +15,13 @@ const MenuBar = () => {
     return (
         <nav className="navbar">
         <div className="logo">
-            <Link to="/" onClick={handleLogoClick}>MadCrime</Link>
+        <Link to="/" onClick={handleLogoClick}>
+            <img src="/assets/logo.png" alt="MadCrime Logo" className="logo-image" />
+            MadCrime
+            </Link>
         </div>
         <div className="nav-links">
+            <Link to="/faq" className="nav-link">FAQ</Link>
             <Link to="/about" className="nav-link">ABOUT</Link>
             <Link to="/contact" className="nav-link">CONTACT</Link>
         </div>
