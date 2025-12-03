@@ -10,13 +10,17 @@ import json
 
 # === 1. 경로 설정 ===
 
-# 이 파일 기준: ../data/incidents.json 읽어서,
-#             ../data/incidents_front.json 로 쓰는 구조
-BASE_DIR = Path(__file__).resolve().parent         # .../backend
-DATA_DIR = BASE_DIR.parent / "data"                # .../data
+# 이 파일 기준:
+#   ../data/incidents.json       읽어서,
+#   ../front/public/incidents_front.json 으로 쓰는 구조
+BASE_DIR = Path(__file__).resolve().parent        # .../backend
+ROOT_DIR = BASE_DIR.parent                        # .../KCU1
+DATA_DIR = ROOT_DIR / "data"                      # .../KCU1/data
+FRONT_PUBLIC_DIR = ROOT_DIR / "front" / "public"  # .../KCU1/front/public
 
-RAW_INCIDENTS_PATH = DATA_DIR / "incidents.json"        # 데이터 팀 결과
-FRONT_INCIDENTS_PATH = DATA_DIR / "incidents_front.json"  # 프론트용 결과
+RAW_INCIDENTS_PATH = DATA_DIR / "incidents.json"             # 데이터 팀 결과
+FRONT_INCIDENTS_PATH = FRONT_PUBLIC_DIR / "incidents_front.json"  # 프론트용 결과
+
 
 
 # === 2. 유틸 함수들 ===
