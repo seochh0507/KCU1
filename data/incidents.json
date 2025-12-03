@@ -1,0 +1,218 @@
+{
+  "source": "City of Madison Police Incident Reports",
+  "generated_at": "2025-11-20T20:11:21.373161+00:00",
+  "days_lookback": 7,
+  "count": 21,
+  "items": [
+    {
+      "title": "2025-508075 + Disturbance",
+      "case_id": "2025-508075",
+      "incident_type": "Disturbance",
+      "location": "5700 block Raymond Rd. Madison, WI 53711",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-18/officers-k-9-unit-respond-to-disturbance-on-citys-west-side"
+    },
+    {
+      "title": "2025-506198 + Weapons Violation",
+      "case_id": "2025-506198",
+      "incident_type": "Weapons Violation",
+      "location": "4400 block Helgesen Drive Madison, WI 53718",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-17/man-flashes-gun-after-being-confronted-by-employee"
+    },
+    {
+      "title": "2025-508597 + Crash",
+      "case_id": "2025-508597",
+      "incident_type": "Crash",
+      "location": "Lexington and Mayfair Avenues Madison, WI 53714",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-19/stolen-vehicle-involved-in-wednesday-morning-crash"
+    },
+    {
+      "title": "2025-505991 + Crash",
+      "case_id": "2025-505991",
+      "incident_type": "Crash",
+      "location": "1900 block S. Stoughton Rd. Madison, WI 53716",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-17/madison-police-investigate-fatal-crash-on-citys-east-side"
+    },
+    {
+      "title": "2025-00508311 + Weapons Violation",
+      "case_id": "2025-00508311",
+      "incident_type": "Weapons Violation",
+      "location": "8100 block Blakton Rd Madison, WI 53719",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "F/B 20s F/B 20s",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-18/weapons-offense-in-the-west-district"
+    },
+    {
+      "title": "2025-506316 + Homicide",
+      "case_id": "2025-506316",
+      "incident_type": "Homicide",
+      "location": "2400 block of Brentwood Pkwy Madison, WI 53704",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-17/one-killed-during-shooting-on-citys-north-side"
+    },
+    {
+      "title": "2025-505392 + Crash",
+      "case_id": "2025-505392",
+      "incident_type": "Crash",
+      "location": "US Highway 12 EB Madison, WI 53713",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-17/reckless-driving-leads-to-fiery-crash-road-closure-on-beltline"
+    },
+    {
+      "title": "2025-505285 + Weapons Violation",
+      "case_id": "2025-505285",
+      "incident_type": "Weapons Violation",
+      "location": "600 block S. Whitney Way Madison, WI 53711",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-16/one-injured-during-sunday-night-shooting"
+    },
+    {
+      "title": "2025-505167 + Shots Fired",
+      "case_id": "2025-505167",
+      "incident_type": "Shots Fired",
+      "location": "700 block W. Badger Road Madison, WI 53713",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-16/drone-k-9-unit-assist-in-shots-fired-investigation-on-citys"
+    },
+    {
+      "title": "2025-501156 + Suspicious Person or Vehicle",
+      "case_id": "2025-501156",
+      "incident_type": "Suspicious Person or Vehicle",
+      "location": "4400 Block Britta Pkwy. Madison, WI 53711",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Towain T. Young, age 18, of Fitchburg",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-14/suspect-arrested-gun-recovered-after-suspicious-person-call"
+    },
+    {
+      "title": "2025-499047 + Weapons Violation",
+      "case_id": "2025-499047",
+      "incident_type": "Weapons Violation",
+      "location": "2400 Block Calypso Rd Madison, WI 53704",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-12/madison-police-make-arrest-in-weapons-offense"
+    },
+    {
+      "title": "2025-499504 + Drug Investigation",
+      "case_id": "2025-499504",
+      "incident_type": "Drug Investigation",
+      "location": "4800 Block Hayes Rd Madison, WI 53704",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-12/madison-police-investigate-drug-incident"
+    },
+    {
+      "title": "2025-498221 + Robbery",
+      "case_id": "2025-498221",
+      "incident_type": "Robbery",
+      "location": "Commercial Ave / Sprecher Rd Madison, WI 53718",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-12/madison-police-investigate-armed-robbery"
+    },
+    {
+      "title": "2025-498138 + Intoxicated or Impaired Driver",
+      "case_id": "2025-498138",
+      "incident_type": "Intoxicated or Impaired Driver",
+      "location": "Near East Washington Ave and North Patterson St Madison, WI 53703",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-12/omvwi-arrest-intoxicated-driver"
+    },
+    {
+      "title": "2025-498181 + Weapons Violation",
+      "case_id": "2025-498181",
+      "incident_type": "Weapons Violation",
+      "location": "100 block of S Fair Oaks Ave Madison, WI 53704",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-12/weapons-offense-shots-fired-on-eastside"
+    },
+    {
+      "title": "2025-492638 + Traffic Incident",
+      "case_id": "2025-492638",
+      "incident_type": "Traffic Incident",
+      "location": "6800 block Cross Country Rd Madison, WI 53719",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-08/fatal-crash-on-cross-country-rd"
+    },
+    {
+      "title": "2025-491457 + Weapons Violation",
+      "case_id": "2025-491457",
+      "incident_type": "Weapons Violation",
+      "location": "10 block Kessel Ct Madison, WI 53711",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-07/victim-shot-during-attempted-robbery"
+    },
+    {
+      "title": "2025-490634 + Traffic Incident",
+      "case_id": "2025-490634",
+      "incident_type": "Traffic Incident",
+      "location": "Allied Dr. and Thurston Ln. Madison, WI 53711",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Angela M. Stevens, age 45, of Fitchburg",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-06/driver-arrested-for-owi-following-crash"
+    },
+    {
+      "title": "2025-490843 + Weapons Violation",
+      "case_id": "2025-490843",
+      "incident_type": "Weapons Violation",
+      "location": "Lien Rd. and Autumn Lake Pkwy Madison, WI 53718",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-06/shots-fired-on-east-side-no-damage-located"
+    },
+    {
+      "title": "2025-487695 + Missing Adult",
+      "case_id": "2025-487695",
+      "incident_type": "Missing Adult",
+      "location": "7000 block Flower Lane Madison, WI 53717",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports/2025-11-04/missing-person-silver-alert-issued"
+    },
+    {
+      "title": "Incident Reports",
+      "case_id": "",
+      "incident_type": "",
+      "location": "",
+      "incident_date": "2025-11-18T00:00:00+00:00",
+      "incident_date_text": "Subscribe to the Police Incident Reports email list.",
+      "arrested": "Unknown",
+      "url": "https://www.cityofmadison.com/police/incident-reports"
+    }
+  ]
+}
