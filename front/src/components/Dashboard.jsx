@@ -1,421 +1,95 @@
-// // import React, { useState, useEffect, useRef } from 'react';
-
-// // const Dashboard = () => {
-// //     const [selectedButton, setSelectedButton] = useState(null);
-// //     const [showFullDataset, setShowFullDataset] = useState(false);
-// //     const [isVisible, setIsVisible] = useState(false);
-// //     const dashboardRef = useRef(null);
-    
-// //     const [statsData, setStatsData] = useState({
-// //         incidentsToday: 2,
-// //         mostCommonType: 'THEFT',
-// //         peakTime: 'EVENING'
-// //     });
-// //     const [tableData, setTableData] = useState([
-// //         { id: 1, date: '2025-11-13', type: 'THEFT', time: '18:30', location: 'location1' },
-// //         { id: 2, date: '2025-11-13', type: 'TRAFFIC', time: '14:20', location: 'location2' },
-// //         { id: 3, date: '2025-11-12', type: 'PROPERTY', time: '22:15', location: 'location3' },
-// //         { id: 4, date: '2025-11-12', type: 'VIOLENT', time: '19:45', location: 'loaction4' },
-// //         { id: 5, date: '2025-11-11', type: 'THEFT', time: '16:30', location: 'location5' },
-// //     ]);
-
-// //     useEffect(() => {
-// //         const observer = new IntersectionObserver(
-// //         ([entry]) => {
-// //             if (entry.isIntersecting) {
-// //             setIsVisible(true);
-// //             } else {
-// //             setIsVisible(false);
-// //             }
-// //         },
-// //         { threshold: 0.3 }
-// //         );
-
-// //         if (dashboardRef.current) {
-// //         observer.observe(dashboardRef.current);
-// //         }
-
-// //         return () => {
-// //         if (dashboardRef.current) {
-// //             observer.unobserve(dashboardRef.current);
-// //         }
-// //         };
-// //     }, []);
-
-// //     const handleButtonClick = (buttonName) => {
-// //         if (selectedButton === buttonName) {
-// //         setSelectedButton(null);
-// //         } else {
-// //         setSelectedButton(buttonName);
-// //         setShowFullDataset(false);
-// //         }
-// //     };
-
-// //     const handleFullDatasetClick = () => {
-// //         if (showFullDataset) {
-// //         setShowFullDataset(false);
-// //         } else {
-// //         setShowFullDataset(true);
-// //         setSelectedButton(null);
-// //         }
-// //     };
-
-// //     return (
-// //         <div className={`dashboard-section ${isVisible ? 'visible' : ''}`} ref={dashboardRef}>
-// //         <div className="dashboard-left">
-// //             <div className="stats-container">
-// //             <button
-// //                 className={`stat-box ${selectedButton === 'incidents' ? 'active' : ''}`}
-// //                 onClick={() => handleButtonClick('incidents')}
-// //             >
-// //                 <div className="stat-title">Incidents Today</div>
-// //                 <div className="stat-value">{statsData.incidentsToday}</div>
-// //             </button>
-
-// //             <button
-// //                 className={`stat-box ${selectedButton === 'type' ? 'active' : ''}`}
-// //                 onClick={() => handleButtonClick('type')}
-// //             >
-// //                 <div className="stat-title">Most Common Type</div>
-// //                 <div className="stat-value">{statsData.mostCommonType}</div>
-// //             </button>
-
-// //             <button
-// //                 className={`stat-box ${selectedButton === 'time' ? 'active' : ''}`}
-// //                 onClick={() => handleButtonClick('time')}
-// //             >
-// //                 <div className="stat-title">Peak Time</div>
-// //                 <div className="stat-value">{statsData.peakTime}</div>
-// //             </button>
-// //             </div>
-
-// //             <button
-// //             className={`full-dataset-link ${showFullDataset ? 'active' : ''}`}
-// //             onClick={handleFullDatasetClick}
-// //             >
-// //             Full Dataset
-// //             </button>
-// //         </div>
-
-// //         <div className="chart-container">
-// //             {!showFullDataset && selectedButton === 'incidents' && (
-// //             <div className="chart-content">
-// //                 <h2 className="chart-title">Number of Reported Incidents per Day</h2>
-// //                 <div className="chart-placeholder">
-// //                 <p>Bar chart</p>
-// //                 </div>
-// //             </div>
-// //             )}
-
-// //             {!showFullDataset && selectedButton === 'type' && (
-// //             <div className="chart-content">
-// //                 <h2 className="chart-title">Number of Reported Incidents per Type</h2>
-// //                 <div className="chart-placeholder">
-// //                 <p>Bar chart</p>
-// //                 </div>
-// //             </div>
-// //             )}
-
-// //             {!showFullDataset && selectedButton === 'time' && (
-// //             <div className="chart-content">
-// //                 <h2 className="chart-title">Number of Reported Incidents per Time</h2>
-// //                 <div className="chart-placeholder">
-// //                 <p>Bar chart</p>
-// //                 </div>
-// //             </div>
-// //             )}
-
-// //             {showFullDataset && (
-// //             <div className="table-content">
-// //                 <h2 className="chart-title">Full Dataset</h2>
-// //                 <div className="table-wrapper">
-// //                 <table className="data-table">
-// //                     <thead>
-// //                     <tr>
-// //                         <th>ID</th>
-// //                         <th>Date</th>
-// //                         <th>Type</th>
-// //                         <th>Time</th>
-// //                         <th>Location</th>
-// //                     </tr>
-// //                     </thead>
-// //                     <tbody>
-// //                     {tableData.map((row) => (
-// //                         <tr key={row.id}>
-// //                         <td>{row.id}</td>
-// //                         <td>{row.date}</td>
-// //                         <td>{row.type}</td>
-// //                         <td>{row.time}</td>
-// //                         <td>{row.location}</td>
-// //                         </tr>
-// //                     ))}
-// //                     </tbody>
-// //                 </table>
-// //                 </div>
-// //             </div>
-// //             )}
-// //         </div>
-// //         </div>
-// //     );
-// // };
-
-// // export default Dashboard;
-
-// import React, { useState, useEffect, useRef } from 'react';
-
-// const Dashboard = () => {
-//     const [selectedButton, setSelectedButton] = useState(null);
-//     const [showFullDataset, setShowFullDataset] = useState(false);
-//     const [isVisible, setIsVisible] = useState(false);
-//     const dashboardRef = useRef(null);
-    
-//     const [statsData, setStatsData] = useState({
-//         incidentsToday: 2,
-//         mostCommonType: 'THEFT',
-//         peakTime: 'EVENING'
-//     });
-//     const [tableData, setTableData] = useState([
-//         { id: 1, date: '2025-11-13', type: 'THEFT', time: '18:30', location: 'location1' },
-//         { id: 2, date: '2025-11-13', type: 'TRAFFIC', time: '14:20', location: 'location2' },
-//         { id: 3, date: '2025-11-12', type: 'PROPERTY', time: '22:15', location: 'location3' },
-//         { id: 4, date: '2025-11-12', type: 'VIOLENT', time: '19:45', location: 'loaction4' },
-//         { id: 5, date: '2025-11-11', type: 'THEFT', time: '16:30', location: 'location5' },
-//     ]);
-
-//     useEffect(() => {
-//         const observer = new IntersectionObserver(
-//         ([entry]) => {
-//             if (entry.isIntersecting) {
-//             setIsVisible(true);
-//             } else {
-//             setIsVisible(false);
-//             }
-//         },
-//         { threshold: 0.3 }
-//         );
-
-//         if (dashboardRef.current) {
-//         observer.observe(dashboardRef.current);
-//         }
-
-//         return () => {
-//         if (dashboardRef.current) {
-//             observer.unobserve(dashboardRef.current);
-//         }
-//         };
-//     }, []);
-
-//     const handleButtonClick = (buttonName) => {
-//         if (selectedButton === buttonName) {
-//         setSelectedButton(null);
-//         } else {
-//         setSelectedButton(buttonName);
-//         setShowFullDataset(false);
-//         }
-//     };
-
-//     const handleFullDatasetClick = () => {
-//         if (showFullDataset) {
-//         setShowFullDataset(false);
-//         } else {
-//         setShowFullDataset(true);
-//         setSelectedButton(null);
-//         }
-//     };
-
-//     // Determine if any content is showing
-//     const hasContent = selectedButton !== null || showFullDataset;
-
-//     return (
-//         <div className={`dashboard-section ${isVisible ? 'visible' : ''} ${hasContent ? 'has-content' : ''}`} ref={dashboardRef}>
-//         {!hasContent && (
-//             // Default layout: buttons on left, empty space on right
-//             <>
-//             <div className="dashboard-left">
-//                 <div className="stats-container">
-//                 <button
-//                     className={`stat-box`}
-//                     onClick={() => handleButtonClick('incidents')}
-//                 >
-//                     <div className="stat-title">Incidents Today</div>
-//                     <div className="stat-value">{statsData.incidentsToday}</div>
-//                 </button>
-
-//                 <button
-//                     className={`stat-box`}
-//                     onClick={() => handleButtonClick('type')}
-//                 >
-//                     <div className="stat-title">Most Common Type</div>
-//                     <div className="stat-value">{statsData.mostCommonType}</div>
-//                 </button>
-
-//                 <button
-//                     className={`stat-box`}
-//                     onClick={() => handleButtonClick('time')}
-//                 >
-//                     <div className="stat-title">Peak Time</div>
-//                     <div className="stat-value">{statsData.peakTime}</div>
-//                 </button>
-//                 </div>
-
-//                 <button
-//                 className={`full-dataset-link`}
-//                 onClick={handleFullDatasetClick}
-//                 >
-//                 Full Dataset
-//                 </button>
-//             </div>
-//             <div className="chart-container"></div>
-//             </>
-//         )}
-
-//         {hasContent && (
-//             // Content layout: graph centered, buttons below
-//             <div className="dashboard-centered">
-//             <div className="chart-container-centered">
-//                 {!showFullDataset && selectedButton === 'incidents' && (
-//                 <div className="chart-content">
-//                     <h2 className="chart-title">Number of Reported Incidents per Day</h2>
-//                     <div className="chart-placeholder">
-//                     <p>Bar chart</p>
-//                     </div>
-//                 </div>
-//                 )}
-
-//                 {!showFullDataset && selectedButton === 'type' && (
-//                 <div className="chart-content">
-//                     <h2 className="chart-title">Number of Reported Incidents per Type</h2>
-//                     <div className="chart-placeholder">
-//                     <p>Bar chart</p>
-//                     </div>
-//                 </div>
-//                 )}
-
-//                 {!showFullDataset && selectedButton === 'time' && (
-//                 <div className="chart-content">
-//                     <h2 className="chart-title">Number of Reported Incidents per Time</h2>
-//                     <div className="chart-placeholder">
-//                     <p>Bar chart</p>
-//                     </div>
-//                 </div>
-//                 )}
-
-//                 {showFullDataset && (
-//                 <div className="table-content">
-//                     <h2 className="chart-title">Full Dataset</h2>
-//                     <div className="table-wrapper">
-//                     <table className="data-table">
-//                         <thead>
-//                         <tr>
-//                             <th>ID</th>
-//                             <th>Date</th>
-//                             <th>Type</th>
-//                             <th>Time</th>
-//                             <th>Location</th>
-//                         </tr>
-//                         </thead>
-//                         <tbody>
-//                         {tableData.map((row) => (
-//                             <tr key={row.id}>
-//                             <td>{row.id}</td>
-//                             <td>{row.date}</td>
-//                             <td>{row.type}</td>
-//                             <td>{row.time}</td>
-//                             <td>{row.location}</td>
-//                             </tr>
-//                         ))}
-//                         </tbody>
-//                     </table>
-//                     </div>
-//                 </div>
-//                 )}
-//             </div>
-
-//             <div className="dashboard-bottom">
-//                 <div className="stats-container-small">
-//                 <button
-//                     className={`stat-box-small ${selectedButton === 'incidents' ? 'active' : ''}`}
-//                     onClick={() => handleButtonClick('incidents')}
-//                 >
-//                     <div className="stat-title-small">Incidents Today</div>
-//                     <div className="stat-value-small">{statsData.incidentsToday}</div>
-//                 </button>
-
-//                 <button
-//                     className={`stat-box-small ${selectedButton === 'type' ? 'active' : ''}`}
-//                     onClick={() => handleButtonClick('type')}
-//                 >
-//                     <div className="stat-title-small">Most Common Type</div>
-//                     <div className="stat-value-small">{statsData.mostCommonType}</div>
-//                 </button>
-
-//                 <button
-//                     className={`stat-box-small ${selectedButton === 'time' ? 'active' : ''}`}
-//                     onClick={() => handleButtonClick('time')}
-//                 >
-//                     <div className="stat-title-small">Peak Time</div>
-//                     <div className="stat-value-small">{statsData.peakTime}</div>
-//                 </button>
-//                 </div>
-
-//                 <button
-//                 className={`full-dataset-link-small ${showFullDataset ? 'active' : ''}`}
-//                 onClick={handleFullDatasetClick}
-//                 >
-//                 Full Dataset
-//                 </button>
-//             </div>
-//             </div>
-//         )}
-//         </div>
-//     );
-// };
-
-// export default Dashboard;
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const [selectedButton, setSelectedButton] = useState(null);
     const [isVisible, setIsVisible] = useState(false);
+    const [showCalendar, setShowCalendar] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [currentMonth, setCurrentMonth] = useState(new Date());
     const dashboardRef = useRef(null);
+    const calendarRef = useRef(null);
     
+    // This will be replaced with actual data from backend
     const [statsData, setStatsData] = useState({
         incidentsToday: 2,
         mostCommonType: 'THEFT',
         peakTime: 'EVENING'
     });
 
+    // Format date for display
+    const formatDate = (date) => {
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    };
+
+    // Get the date range (7 days before selected date)
+    const getDateRange = (endDate) => {
+        const start = new Date(endDate);
+        start.setDate(start.getDate() - 6);
+        return {
+            start: formatDate(start),
+            end: formatDate(endDate)
+        };
+    };
+
     useEffect(() => {
         const observer = new IntersectionObserver(
-        ([entry]) => {
-            if (entry.isIntersecting) {
-            setIsVisible(true);
-            } else {
-            setIsVisible(false);
-            }
-        },
-        { threshold: 0.3 }
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                } else {
+                    setIsVisible(false);
+                }
+            },
+            { threshold: 0.3 }
         );
 
         if (dashboardRef.current) {
-        observer.observe(dashboardRef.current);
+            observer.observe(dashboardRef.current);
         }
 
         return () => {
-        if (dashboardRef.current) {
-            observer.unobserve(dashboardRef.current);
-        }
+            if (dashboardRef.current) {
+                observer.unobserve(dashboardRef.current);
+            }
         };
     }, []);
 
+    // Close calendar when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+                setShowCalendar(false);
+            }
+        };
+
+        if (showCalendar) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showCalendar]);
+
+    // Update stats when date changes (this will fetch from backend)
+    useEffect(() => {
+        // TODO: Fetch data from backend for the selected date range
+        console.log('Fetching data for:', getDateRange(selectedDate));
+        // setStatsData(...); // Update with backend data
+    }, [selectedDate]);
+
     const handleButtonClick = (buttonName) => {
         if (selectedButton === buttonName) {
-        setSelectedButton(null);
+            setSelectedButton(null);
         } else {
-        setSelectedButton(buttonName);
+            setSelectedButton(buttonName);
         }
     };
 
@@ -423,120 +97,246 @@ const Dashboard = () => {
         navigate('/fulldata');
     };
 
-    // Determine if any content is showing
+    const handleDateSelect = (date) => {
+        setSelectedDate(date);
+        setShowCalendar(false);
+    };
+
+    // Calendar helper functions
+    const getDaysInMonth = (date) => {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startingDayOfWeek = firstDay.getDay();
+
+        const days = [];
+        
+        // Add empty slots for days before the first day of month
+        for (let i = 0; i < startingDayOfWeek; i++) {
+            days.push(null);
+        }
+        
+        // Add all days of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+            days.push(new Date(year, month, day));
+        }
+        
+        return days;
+    };
+
+    const isSameDay = (date1, date2) => {
+        if (!date1 || !date2) return false;
+        return date1.getDate() === date2.getDate() &&
+               date1.getMonth() === date2.getMonth() &&
+               date1.getFullYear() === date2.getFullYear();
+    };
+
+    const isToday = (date) => {
+        if (!date) return false;
+        return isSameDay(date, new Date());
+    };
+
+    const isFutureDate = (date) => {
+        if (!date) return false;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return date > today;
+    };
+
+    const goToPreviousMonth = () => {
+        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+    };
+
+    const goToNextMonth = () => {
+        const today = new Date();
+        const nextMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
+        if (nextMonth <= today) {
+            setCurrentMonth(nextMonth);
+        }
+    };
+
+    const canGoToNextMonth = () => {
+        const today = new Date();
+        const nextMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
+        return nextMonth <= today;
+    };
+
     const hasContent = selectedButton !== null;
+    const dateRange = getDateRange(selectedDate);
+
+    const CalendarComponent = () => (
+        <div className="calendar-component" ref={calendarRef}>
+            <div className="calendar-header">
+                <button onClick={goToPreviousMonth} className="calendar-nav-button">
+                    <ChevronLeft size={20} />
+                </button>
+                <span className="calendar-month">
+                    {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                </span>
+                <button 
+                    onClick={goToNextMonth} 
+                    className="calendar-nav-button"
+                    disabled={!canGoToNextMonth()}
+                >
+                    <ChevronRight size={20} />
+                </button>
+            </div>
+            <div className="calendar-grid">
+                <div className="calendar-weekdays">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                        <div key={day} className="calendar-weekday">{day}</div>
+                    ))}
+                </div>
+                <div className="calendar-days">
+                    {getDaysInMonth(currentMonth).map((date, index) => (
+                        <button
+                            key={index}
+                            className={`calendar-day ${!date ? 'empty' : ''} ${isSameDay(date, selectedDate) ? 'selected' : ''} ${isToday(date) ? 'today' : ''} ${isFutureDate(date) ? 'disabled' : ''}`}
+                            onClick={() => date && !isFutureDate(date) && handleDateSelect(date)}
+                            disabled={!date || isFutureDate(date)}
+                        >
+                            {date ? date.getDate() : ''}
+                        </button>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
 
     return (
         <div className={`dashboard-section ${isVisible ? 'visible' : ''} ${hasContent ? 'has-content' : ''}`} ref={dashboardRef}>
-        {!hasContent && (
-            // Default layout: buttons on left, empty space on right
-            <>
-            <div className="dashboard-left">
-                <div className="stats-container">
-                <button
-                    className={`stat-box`}
-                    onClick={() => handleButtonClick('incidents')}
-                >
-                    <div className="stat-title">Incidents Today</div>
-                    <div className="stat-value">{statsData.incidentsToday}</div>
-                </button>
+            {!hasContent && (
+                <>
+                    <div className="dashboard-left">
+                        <div className="stats-container">
+                            <button
+                                className={`stat-box`}
+                                onClick={() => handleButtonClick('incidents')}
+                            >
+                                <div className="stat-title">Incidents Today</div>
+                                <div className="stat-value">{statsData.incidentsToday}</div>
+                            </button>
 
-                <button
-                    className={`stat-box`}
-                    onClick={() => handleButtonClick('type')}
-                >
-                    <div className="stat-title">Most Common Type</div>
-                    <div className="stat-value">{statsData.mostCommonType}</div>
-                </button>
+                            <button
+                                className={`stat-box`}
+                                onClick={() => handleButtonClick('type')}
+                            >
+                                <div className="stat-title">Most Common Type</div>
+                                <div className="stat-value">{statsData.mostCommonType}</div>
+                            </button>
 
-                <button
-                    className={`stat-box`}
-                    onClick={() => handleButtonClick('time')}
-                >
-                    <div className="stat-title">Peak Time</div>
-                    <div className="stat-value">{statsData.peakTime}</div>
-                </button>
-                </div>
+                            <button
+                                className={`stat-box`}
+                                onClick={() => handleButtonClick('time')}
+                            >
+                                <div className="stat-title">Peak Time</div>
+                                <div className="stat-value">{statsData.peakTime}</div>
+                            </button>
+                        </div>
 
-                <button
-                className={`full-dataset-link`}
-                onClick={handleFullDatasetClick}
-                >
-                Full Dataset
-                </button>
-            </div>
-            <div className="chart-container"></div>
-            </>
-        )}
+                        <button
+                            className={`full-dataset-link`}
+                            onClick={handleFullDatasetClick}
+                        >
+                            Full Dataset
+                        </button>
+                    </div>
+                    <div className="chart-container">
+                        <CalendarComponent />
+                    </div>
+                </>
+            )}
 
-        {hasContent && (
-            // Content layout: graph centered, buttons below
-            <div className="dashboard-centered">
-            <div className="chart-container-centered">
-                {selectedButton === 'incidents' && (
-                <div className="chart-content">
-                    <h2 className="chart-title">Number of Reported Incidents per Day</h2>
-                    <div className="chart-placeholder">
-                    <p>Bar chart</p>
+            {hasContent && (
+                <div className="dashboard-centered">
+                    <div className="chart-container-centered">
+                        {selectedButton === 'incidents' && (
+                            <div className="chart-content">
+                                <div className="chart-header">
+                                    <h2 className="chart-title">Number of Reported Incidents per Day</h2>
+                                    <button className="calendar-toggle-button" onClick={() => setShowCalendar(!showCalendar)}>
+                                        <Calendar size={24} />
+                                    </button>
+                                </div>
+                                {showCalendar && <CalendarComponent />}
+                                <div className="chart-placeholder">
+                                    <p>Bar chart</p>
+                                    <p className="chart-date-info">Data from {dateRange.start} to {dateRange.end}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {selectedButton === 'type' && (
+                            <div className="chart-content">
+                                <div className="chart-header">
+                                    <h2 className="chart-title">Number of Reported Incidents per Type</h2>
+                                    <button className="calendar-toggle-button" onClick={() => setShowCalendar(!showCalendar)}>
+                                        <Calendar size={24} />
+                                    </button>
+                                </div>
+                                {showCalendar && <CalendarComponent />}
+                                <div className="chart-placeholder">
+                                    <p>Bar chart</p>
+                                    <p className="chart-date-info">Data from {dateRange.start} to {dateRange.end}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {selectedButton === 'time' && (
+                            <div className="chart-content">
+                                <div className="chart-header">
+                                    <h2 className="chart-title">Number of Reported Incidents per Time</h2>
+                                    <button className="calendar-toggle-button" onClick={() => setShowCalendar(!showCalendar)}>
+                                        <Calendar size={24} />
+                                    </button>
+                                </div>
+                                {showCalendar && <CalendarComponent />}
+                                <div className="chart-placeholder">
+                                    <p>Bar chart</p>
+                                    <p className="chart-date-info">Data from {dateRange.start} to {dateRange.end}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="dashboard-bottom">
+                        <div className="stats-container-small">
+                            <button
+                                className={`stat-box-small ${selectedButton === 'incidents' ? 'active' : ''}`}
+                                onClick={() => handleButtonClick('incidents')}
+                            >
+                                <div className="stat-title-small">Incidents Today</div>
+                                <div className="stat-value-small">{statsData.incidentsToday}</div>
+                            </button>
+
+                            <button
+                                className={`stat-box-small ${selectedButton === 'type' ? 'active' : ''}`}
+                                onClick={() => handleButtonClick('type')}
+                            >
+                                <div className="stat-title-small">Most Common Type</div>
+                                <div className="stat-value-small">{statsData.mostCommonType}</div>
+                            </button>
+
+                            <button
+                                className={`stat-box-small ${selectedButton === 'time' ? 'active' : ''}`}
+                                onClick={() => handleButtonClick('time')}
+                            >
+                                <div className="stat-title-small">Peak Time</div>
+                                <div className="stat-value-small">{statsData.peakTime}</div>
+                            </button>
+                        </div>
+
+                        <button
+                            className={`full-dataset-link-small`}
+                            onClick={handleFullDatasetClick}
+                        >
+                            Full Dataset
+                        </button>
                     </div>
                 </div>
-                )}
-
-                {selectedButton === 'type' && (
-                <div className="chart-content">
-                    <h2 className="chart-title">Number of Reported Incidents per Type</h2>
-                    <div className="chart-placeholder">
-                    <p>Bar chart</p>
-                    </div>
-                </div>
-                )}
-
-                {selectedButton === 'time' && (
-                <div className="chart-content">
-                    <h2 className="chart-title">Number of Reported Incidents per Time</h2>
-                    <div className="chart-placeholder">
-                    <p>Bar chart</p>
-                    </div>
-                </div>
-                )}
-            </div>
-
-            <div className="dashboard-bottom">
-                <div className="stats-container-small">
-                <button
-                    className={`stat-box-small ${selectedButton === 'incidents' ? 'active' : ''}`}
-                    onClick={() => handleButtonClick('incidents')}
-                >
-                    <div className="stat-title-small">Incidents Today</div>
-                    <div className="stat-value-small">{statsData.incidentsToday}</div>
-                </button>
-
-                <button
-                    className={`stat-box-small ${selectedButton === 'type' ? 'active' : ''}`}
-                    onClick={() => handleButtonClick('type')}
-                >
-                    <div className="stat-title-small">Most Common Type</div>
-                    <div className="stat-value-small">{statsData.mostCommonType}</div>
-                </button>
-
-                <button
-                    className={`stat-box-small ${selectedButton === 'time' ? 'active' : ''}`}
-                    onClick={() => handleButtonClick('time')}
-                >
-                    <div className="stat-title-small">Peak Time</div>
-                    <div className="stat-value-small">{statsData.peakTime}</div>
-                </button>
-                </div>
-
-                <button
-                className={`full-dataset-link-small`}
-                onClick={handleFullDatasetClick}
-                >
-                Full Dataset
-                </button>
-            </div>
-            </div>
-        )}
+            )}
         </div>
     );
 };

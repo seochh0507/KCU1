@@ -1439,3 +1439,222 @@
         max-width: 100%;
     }
 }
+
+/* Calendar Styles - Add these to your existing style.css */
+
+/* Calendar Component - Always visible in initial view */
+.calendar-component {
+    background-color: white;
+    border: 2px solid #163760;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Chart Header with Calendar Button */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-toggle-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    padding: 0;
+    background-color: white;
+    border: 2px solid #163760;
+    border-radius: 50%;
+    color: #163760;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.calendar-toggle-button:hover {
+    background-color: #163760;
+    color: white;
+    transform: scale(1.05);
+}
+
+.calendar-toggle-button:hover svg {
+    color: white;
+}
+
+/* Calendar in chart view */
+.chart-content .calendar-component {
+    margin-bottom: 30px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.calendar-month {
+    font-family: 'Expletus Sans', cursive;
+    font-size: 18px;
+    font-weight: 600;
+    color: #163760;
+}
+
+.calendar-nav-button {
+    background: none;
+    border: none;
+    color: #163760;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.calendar-nav-button:hover:not(:disabled) {
+    background-color: #f0f0f0;
+}
+
+.calendar-nav-button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.calendar-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.calendar-weekday {
+    font-family: 'Expletus Sans', cursive;
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    text-align: center;
+    padding: 8px 0;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: white;
+    font-family: 'Expletus Sans', cursive;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-day:hover:not(.empty):not(.disabled) {
+    background-color: #C2C5E3;
+    border-color: #163760;
+}
+
+.calendar-day.empty {
+    border: none;
+    background: none;
+    cursor: default;
+}
+
+.calendar-day.selected {
+    background-color: #163760;
+    color: white;
+    border-color: #163760;
+    font-weight: 700;
+}
+
+.calendar-day.today {
+    border: 2px solid #163760;
+    font-weight: 600;
+}
+
+.calendar-day.today.selected {
+    background-color: #163760;
+    color: white;
+}
+
+.calendar-day.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+    background-color: #f9f9f9;
+}
+
+.calendar-day.disabled:hover {
+    background-color: #f9f9f9;
+    border-color: #e0e0e0;
+}
+
+/* Chart date info */
+.chart-date-info {
+    font-size: 14px;
+    color: #666;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+/* Responsive calendar */
+@media (max-width: 768px) {
+    .calendar-component {
+        max-width: 100%;
+    }
+
+    .calendar-toggle-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .calendar-toggle-button {
+        align-self: flex-end;
+    }
+
+    .calendar-month {
+        font-size: 16px;
+    }
+
+    .calendar-weekday {
+        font-size: 12px;
+    }
+
+    .calendar-day {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .calendar-component {
+        padding: 15px;
+    }
+}
