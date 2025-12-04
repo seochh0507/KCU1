@@ -1,9 +1,160 @@
 {
-  "source": "City of Madison Police Incident Reports",
-  "generated_at": "2025-12-04T23:29:35.455225+00:00",
-  "days_lookback": 7,
-  "count": 21,
-  "items": [
+  "totalIncidents": 21,
+  "stats": {
+    "incidentsToday": 0,
+    "mostCommonType": "Weapons Violation",
+    "peakTime": "NIGHT"
+  },
+  "table": [
+    {
+      "id": 1,
+      "date": "2025-12-02",
+      "type": "Battery",
+      "time": "00:00",
+      "location": "500 block Lake Street Madison, WI 53706"
+    },
+    {
+      "id": 2,
+      "date": "2025-12-02",
+      "type": "Weapons Violation",
+      "time": "00:00",
+      "location": "2500 block of Monterey Dr. Madison, WI 53704"
+    },
+    {
+      "id": 3,
+      "date": "2025-12-02",
+      "type": "Traffic Incident",
+      "time": "00:00",
+      "location": "1800 block Beld St. Madison, WI 53713"
+    },
+    {
+      "id": 4,
+      "date": "2025-12-02",
+      "type": "Other",
+      "time": "00:00",
+      "location": "1700 block McKenna Blvd. Madison, WI 53711"
+    },
+    {
+      "id": 5,
+      "date": "2025-12-02",
+      "type": "Homicide",
+      "time": "00:00",
+      "location": "2400 block of Brentwood Pkwy Madison, WI 53704"
+    },
+    {
+      "id": 6,
+      "date": "2025-12-02",
+      "type": "Robbery",
+      "time": "00:00",
+      "location": "700 block Diving Hawk Trail Madison, WI 53713"
+    },
+    {
+      "id": 7,
+      "date": "2025-12-02",
+      "type": "Weapons Violation",
+      "time": "00:00",
+      "location": "University Ave. near N. Francis St. Madison, WI 53715"
+    },
+    {
+      "id": 8,
+      "date": "2025-12-02",
+      "type": "Weapons Violation",
+      "time": "00:00",
+      "location": "4500 block of Cottage Grove Rd. Madison, WI 53716"
+    },
+    {
+      "id": 9,
+      "date": "2025-12-02",
+      "type": "Damaged Property",
+      "time": "00:00",
+      "location": "4800 block Hayes Rd. Madison, WI 53704"
+    },
+    {
+      "id": 10,
+      "date": "2025-12-02",
+      "type": "Crash",
+      "time": "00:00",
+      "location": "US Highway 12 EB Madison, WI 53713"
+    },
+    {
+      "id": 11,
+      "date": "2025-12-02",
+      "type": "Information",
+      "time": "00:00",
+      "location": "Kroncke Dr. Madison, WI 53711"
+    },
+    {
+      "id": 12,
+      "date": "2025-12-02",
+      "type": "Traffic Incident",
+      "time": "00:00",
+      "location": "300 block Knutson Dr. Madison, WI 53704"
+    },
+    {
+      "id": 13,
+      "date": "2025-12-02",
+      "type": "Arrested Person",
+      "time": "00:00",
+      "location": "5100 block of Brookfield Pkwy Madison, WI 53718"
+    },
+    {
+      "id": 14,
+      "date": "2025-12-02",
+      "type": "Traffic Incident",
+      "time": "00:00",
+      "location": "High Street at Fish Hatchery Road Madison, WI 53715"
+    },
+    {
+      "id": 15,
+      "date": "2025-12-02",
+      "type": "Disturbance",
+      "time": "00:00",
+      "location": "5700 block Raymond Rd. Madison, WI 53711"
+    },
+    {
+      "id": 16,
+      "date": "2025-12-02",
+      "type": "Weapons Violation",
+      "time": "00:00",
+      "location": "4400 block Helgesen Drive Madison, WI 53718"
+    },
+    {
+      "id": 17,
+      "date": "2025-12-02",
+      "type": "Crash",
+      "time": "00:00",
+      "location": "Lexington and Mayfair Avenues Madison, WI 53714"
+    },
+    {
+      "id": 18,
+      "date": "2025-12-02",
+      "type": "Crash",
+      "time": "00:00",
+      "location": "1900 block S. Stoughton Rd. Madison, WI 53716"
+    },
+    {
+      "id": 19,
+      "date": "2025-12-02",
+      "type": "Weapons Violation",
+      "time": "00:00",
+      "location": "8100 block Blakton Rd Madison, WI 53719"
+    },
+    {
+      "id": 20,
+      "date": "2025-12-02",
+      "type": "Weapons Violation",
+      "time": "00:00",
+      "location": "600 block S. Whitney Way Madison, WI 53711"
+    },
+    {
+      "id": 21,
+      "date": "2025-12-02",
+      "type": "N/A",
+      "time": "00:00",
+      "location": ""
+    }
+  ],
+  "rawItems": [
     {
       "title": "2025-528229 + Battery",
       "case_id": "2025-528229",

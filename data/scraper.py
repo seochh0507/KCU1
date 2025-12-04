@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -85,23 +87,29 @@ def clean_text(text: str) -> str:
 
 # Detail Page Parser (h2 기반)
 def extract_detail_fields(soup: BeautifulSoup):
-    """
-    상세 페이지의 h2 헤더 기반 섹션 추출
-    구조 예시:
-    <h2>Location</h2>
-    <div>6800 block Cross Country Rd</div>
-    <div>Madison, WI 53719</div>
     
-    <h2>Incident Date</h2>
-    <div>November 19, 2025 – 5:31am</div>
-    """
-    fields = {
-        "location": "",
-        "incident_date": "",
-        "incident_type": "",
-        "case_id": "",
-        "arrested": "Unknown"
-    }
+    # --- NEW: 최신 구조의 incident_date 추출 ---
+    time_tag = soup.select_one("div.field--name-field-incident-date time")
+    if time_tag:
+        dt_raw = time_tag.get("datetime") or time_tag.get_text(strip=True)
+        parsed = parse_date_maybe(dt_raw)
+        fields = {
+            "location": "",
+            "incident_date": dt_raw,
+            "incident_date_parsed": parsed,
+            "incident_type": "",
+            "case_id": "",
+            "arrested": "Unknown"
+        }
+    else:
+        fields = {
+            "location": "",
+            "incident_date": "",
+            "incident_date_parsed": None,
+            "incident_type": "",
+            "case_id": "",
+            "arrested": "Unknown"
+        }
     
     try:
         # 모든 h2 헤더 찾기
@@ -160,11 +168,11 @@ def wait_and_get_soup(driver, wait, css="article"):
     """페이지 로딩 대기 후 BeautifulSoup 반환"""
     try:
         wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css)))
-        return BeautifulSoup(driver.page_source, "lxml")
+        return BeautifulSoup(driver.page_source, "html.parser")
     except TimeoutException:
         print(f"[WARN] Timeout waiting for selector: {css}")
         # 타임아웃이어도 현재 페이지 소스 반환
-        return BeautifulSoup(driver.page_source, "lxml")
+        return BeautifulSoup(driver.page_source, "html.parser")
     except Exception as e:
         print(f"[ERROR] wait_and_get_soup failed: {e}")
         raise
@@ -278,36 +286,36 @@ def fetch_detail(driver, wait, detail_url: str):
 def main():
     cutoff = datetime.now(timezone.utc) - timedelta(days=7)
     driver = None
-    
+
     try:
         print("=" * 60)
         print("Madison Police Incident Reports Scraper")
         print("=" * 60)
-        
+
         driver = make_driver()
         wait = WebDriverWait(driver, WAIT_SEC)
         results = []
-        
+
         # 1. 목록 페이지 크롤링
         print("\n[STEP 1] Fetching list pages...")
         list_items = fetch_list_items(driver, wait)
         print(f"[INFO] Processing {len(list_items)} items...")
-        
+
         # 2. 각 상세 페이지 크롤링
         print("\n[STEP 2] Fetching detail pages...")
         for idx, item in enumerate(list_items, 1):
             detail_url = item["detail_url"]
             print(f"\n[INFO] ({idx}/{len(list_items)}) Processing:")
             print(f"       {detail_url}")
-            
+
             try:
                 detail = fetch_detail(driver, wait, detail_url)
-                
+
                 # 날짜 우선순위: 상세 페이지 → 목록 페이지
                 incident_dt = detail.get("incident_date")
                 if not incident_dt and item.get("list_raw_date"):
                     incident_dt = parse_date_maybe(item["list_raw_date"])
-                
+
                 # 7일 이내만 포함
                 if not incident_dt:
                     print(f"       [SKIP] No date found")
@@ -315,11 +323,11 @@ def main():
                 elif incident_dt < cutoff:
                     print(f"       [SKIP] Outside date range ({incident_dt.date()})")
                     continue
-                
+
                 # 제목 생성: "Case ID + Incident Type"
                 case_id = detail.get("case_id", "").strip()
                 incident_type = detail.get("incident_type", "").strip()
-                
+
                 if case_id and incident_type:
                     title = f"{case_id} + {incident_type}"
                 elif case_id:
@@ -328,7 +336,7 @@ def main():
                     title = incident_type
                 else:
                     title = item.get("title", "Untitled").strip()
-                
+
                 # 결과 저장
                 results.append({
                     "title": title,
@@ -340,20 +348,20 @@ def main():
                     "arrested": detail.get("arrested", "Unknown").strip(),
                     "url": detail_url
                 })
-                
+
                 print(f"       [SUCCESS] {title}")
                 print(f"       Date: {detail.get('incident_date_text', 'N/A')}")
-                
+
             except TimeoutException:
                 print(f"       [WARN] Timeout, skipping")
             except Exception as e:
                 print(f"       [ERROR] {type(e).__name__}: {e}")
                 continue
-        
+
         # 3. JSON 파일 저장
         print("\n" + "=" * 60)
         print("[STEP 3] Saving results...")
-        
+
         payload = {
             "source": "City of Madison Police Incident Reports",
             "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -361,34 +369,32 @@ def main():
             "count": len(results),
             "items": results
         }
-        
-        out_path = "backend/data/incidents.json"
+
+        out_path = Path(__file__).resolve().parent / "incidents.json"
         try:
-            os.makedirs(os.path.dirname(out_path), exist_ok=True)
-            with open(out_path, "w", encoding="utf-8") as f:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            with out_path.open("w", encoding="utf-8") as f:
                 json.dump(payload, f, ensure_ascii=False, indent=2)
             print(f"[SUCCESS] Saved {len(results)} items to: {out_path}")
         except Exception as e:
             print(f"[ERROR] Failed to save JSON: {e}")
             print("[INFO] Printing results to console instead:")
             print(json.dumps(payload, ensure_ascii=False, indent=2))
-        
+
         print("=" * 60)
         print(f"Scraping completed! Total items: {len(results)}")
         print("=" * 60)
-        
+
     except KeyboardInterrupt:
         print("\n[INFO] Interrupted by user (Ctrl+C)")
     except Exception as e:
         print(f"\n[FATAL ERROR] {type(e).__name__}: {e}")
-        import traceback
-        traceback.print_exc()
     finally:
         if driver:
             try:
                 driver.quit()
                 print("\n[INFO] Browser closed")
-            except Exception:
+            except:
                 pass
 
 
