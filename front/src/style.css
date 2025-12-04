@@ -966,6 +966,144 @@
         font-weight: 500;
     }
 
+    /* ==================== Contact Page Styles ==================== */
+
+    .contact-title {
+        font-family: 'Expletus Sans', cursive;
+        font-size: 64px;
+        font-weight: 700;
+        color: black;
+        text-align: center;
+        margin-bottom: 80px;
+        letter-spacing: 2px;
+    }
+
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 80px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 60px;
+    }
+
+    .contact-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .contact-icon-wrapper {
+        width: 100px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+
+    .contact-icon {
+        color: #999;
+        width: 64px;
+        height: 64px;
+    }
+
+    .contact-subtitle {
+        font-family: 'Expletus Sans', cursive;
+        font-size: 32px;
+        font-weight: 700;
+        color: black;
+        margin-bottom: 30px;
+    }
+
+    .contact-links {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+    }
+
+    .contact-link {
+        font-family: 'Expletus Sans', cursive;
+        font-size: 18px;
+        color: black;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        padding: 8px 0;
+    }
+
+    .contact-link:hover {
+        color: #163760;
+        transform: translateX(4px);
+    }
+
+    /* Email links - no underline by default */
+    a[href^="mailto"].contact-link {
+        text-decoration: none;
+    }
+
+    /* GitHub links - underline on hover */
+    a[href^="https://github"].contact-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Responsive styles for Contact page */
+    @media (max-width: 1024px) {
+        .contact-grid {
+            gap: 60px;
+            padding: 0 40px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .contact-title {
+            font-size: 48px;
+            margin-bottom: 60px;
+        }
+
+        .contact-grid {
+            grid-template-columns: 1fr;
+            gap: 60px;
+            padding: 0 20px;
+        }
+
+        .contact-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+
+        .contact-icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .contact-subtitle {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .contact-link {
+            font-size: 16px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .contact-title {
+            font-size: 36px;
+        }
+
+        .contact-subtitle {
+            font-size: 24px;
+        }
+
+        .contact-link {
+            font-size: 14px;
+            word-break: break-all;
+        }
+    }
+
     /* ==================== FAQ Page Styles ==================== */
     /* Replace existing FAQ styles in your style.css */
 
