@@ -15,7 +15,7 @@ const Dashboard = ({ statsData }) => {
     const dashboardRef = useRef(null);
     const calendarRef = useRef(null);
 
-    // 🔹 props로 받은 statsData가 없을 때를 위한 기본값
+    // ✅ props가 아직 안 왔을 때 대비용 기본값
     const safeStats = statsData || {
         incidentsToday: 0,
         mostCommonType: '-',
@@ -81,10 +81,10 @@ const Dashboard = ({ statsData }) => {
         };
     }, [showCalendar]);
 
-    // 🔹 선택 날짜 변경 시 백엔드에서 데이터를 가져올 수 있는 자리 (지금은 콘솔만)
+    // Update stats when date changes (나중에 백엔드 연동 가능 포인트)
     useEffect(() => {
-        console.log('Dashboard date range:', getDateRange(selectedDate));
-        // 나중에 날짜별 통계를 따로 뽑고 싶으면 여기서 fetch + state 추가
+        console.log('Selected date range:', getDateRange(selectedDate));
+        // TODO: 선택한 날짜 기준으로 백엔드에서 재조회하고 싶으면 여기서 fetch
     }, [selectedDate]);
 
     const handleButtonClick = (buttonName) => {
@@ -115,12 +115,12 @@ const Dashboard = ({ statsData }) => {
 
         const days = [];
         
-        // Add empty slots for days before the first day of month
+        // 빈 칸 (첫째 날 이전)
         for (let i = 0; i < startingDayOfWeek; i++) {
             days.push(null);
         }
         
-        // Add all days of the month
+        // 실제 날짜들
         for (let day = 1; day <= daysInMonth; day++) {
             days.push(new Date(year, month, day));
         }
@@ -214,7 +214,7 @@ const Dashboard = ({ statsData }) => {
                     <div className="dashboard-left">
                         <div className="stats-container">
                             <button
-                                className={`stat-box`}
+                                className="stat-box"
                                 onClick={() => handleButtonClick('incidents')}
                             >
                                 <div className="stat-title">Incidents Today</div>
@@ -222,7 +222,7 @@ const Dashboard = ({ statsData }) => {
                             </button>
 
                             <button
-                                className={`stat-box`}
+                                className="stat-box"
                                 onClick={() => handleButtonClick('type')}
                             >
                                 <div className="stat-title">Most Common Type</div>
@@ -230,7 +230,7 @@ const Dashboard = ({ statsData }) => {
                             </button>
 
                             <button
-                                className={`stat-box`}
+                                className="stat-box"
                                 onClick={() => handleButtonClick('time')}
                             >
                                 <div className="stat-title">Peak Time</div>
@@ -239,7 +239,7 @@ const Dashboard = ({ statsData }) => {
                         </div>
 
                         <button
-                            className={`full-dataset-link`}
+                            className="full-dataset-link"
                             onClick={handleFullDatasetClick}
                         >
                             Full Dataset
@@ -331,7 +331,7 @@ const Dashboard = ({ statsData }) => {
                         </div>
 
                         <button
-                            className={`full-dataset-link-small`}
+                            className="full-dataset-link-small"
                             onClick={handleFullDatasetClick}
                         >
                             Full Dataset

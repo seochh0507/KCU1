@@ -12,24 +12,23 @@ import Map from '../components/Map';
 const Main = () => {
     const navigate = useNavigate();
 
-    // 🔹 검색창
+    // 검색창
     const [initialSearchQuery, setInitialSearchQuery] = useState('');
 
-    // 🔹 백엔드에서 온 숫자/통계/테이블을 저장할 state
-    const [targetNumber, setTargetNumber] = useState(0);      // totalIncidents
-    const [statsData, setStatsData] = useState(null);         // { incidentsToday, mostCommonType, peakTime }
-    const [tableData, setTableData] = useState([]);           // 나중에 FullData/필터에 쓸 수 있음
-
-    // 🔹 숫자 애니메이션 관련 state
+    // 상단 숫자 애니메이션 관련 상태
+    const [targetNumber, setTargetNumber] = useState(56);   // 기본값 56 (데이터 없을 때 fallback)
     const [displayNumber, setDisplayNumber] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
     const [hasAnimated, setHasAnimated] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const statsRef = useRef(null);
 
-    // ======================================================
-    // 1) incidents_front.json 한 번만 fetch 해서 state에 저장
-    // ======================================================
+    // 백엔드에서 온 실제 데이터들을 들고 있을 state
+    const [statsData, setStatsData] = useState(null);   // Dashboard용
+    const [tableData, setTableData] = useState([]);     // FullData/테이블용 (필요 시)
+    const [rawItems, setRawItems] = useState([]);       // Map 등에서 쓸 원본 리스트
+
+    // ===== 1) incidents_front.json 한 번만 fetch하기 =====
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -37,38 +36,50 @@ const Main = () => {
                 if (!res.ok) {
                     throw new Error(`HTTP error! status: ${res.status}`);
                 }
-
                 const data = await res.json();
 
-                // 백엔드에서 만들어준 구조 그대로 사용
-                setTargetNumber(data.totalIncidents ?? 0);
-                setStatsData(data.stats ?? null);
-                setTableData(data.table ?? []);
+                // 안전하게 fallback 넣어두기
+                const total = data.totalIncidents ?? 0;
+                const stats = data.stats ?? {
+                    incidentsToday: 0,
+                    mostCommonType: '-',
+                    peakTime: '-',
+                };
+                const table = data.table ?? [];
+                const items = data.rawItems ?? [];
 
-                // 혹시 이미 화면에 보이는 상태였다면
-                // 숫자 애니메이션을 다시 돌릴 수 있게 초기화
-                setHasAnimated(false);
-                setDisplayNumber(0);
+                setTargetNumber(total);
+                setStatsData(stats);
+                setTableData(table);
+                setRawItems(items);
             } catch (err) {
-                console.error('Failed to load /incidents_front.json', err);
-                // 실패해도 최소한 0으로 초기화
-                setTargetNumber(0);
-                setStatsData(null);
+                console.error('Failed to load incidents_front.json:', err);
+
+                // 에러 시에도 최소한 기본값은 유지
+                setTargetNumber(56);
+                setStatsData({
+                    incidentsToday: 0,
+                    mostCommonType: '-',
+                    peakTime: '-',
+                });
                 setTableData([]);
+                setRawItems([]);
             }
         };
 
         loadData();
-    }, []); // 🔸 페이지 첫 로드 때 한 번만 실행
+    }, []);
 
-    // ======================================================
-    // 2) IntersectionObserver: 스크롤로 stats 섹션 보이는지 체크
-    // ======================================================
+    // ===== 2) 스크롤되면 숫자 애니메이션 시작 (한 번만) =====
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
                     setIsVisible(true);
+                    if (!hasAnimated) {
+                        startNumberAnimation();
+                        setHasAnimated(true);
+                    }
                 } else {
                     setIsVisible(false);
                 }
@@ -85,30 +96,21 @@ const Main = () => {
                 observer.unobserve(statsRef.current);
             }
         };
-    }, []);
+    }, [hasAnimated, targetNumber]);
 
-    // ======================================================
-    // 3) 숫자 애니메이션 함수 (totalIncidents 기준)
-    // ======================================================
-    const startNumberAnimation = (finalNumber) => {
-        if (finalNumber <= 0) {
-            setDisplayNumber(0);
-            setIsAnimating(false);
-            return;
-        }
-
+    const startNumberAnimation = () => {
         setIsAnimating(true);
         setDisplayNumber(0);
 
         const duration = 2000; // 2초
         const steps = 60;
-        const increment = finalNumber / steps;
+        const increment = targetNumber / steps;
         let current = 0;
 
         const timer = setInterval(() => {
             current += increment;
-            if (current >= finalNumber) {
-                setDisplayNumber(finalNumber);
+            if (current >= targetNumber) {
+                setDisplayNumber(targetNumber);
                 setIsAnimating(false);
                 clearInterval(timer);
             } else {
@@ -117,20 +119,7 @@ const Main = () => {
         }, duration / steps);
     };
 
-    // ======================================================
-    // 4) 섹션이 보이고, 아직 애니메이션 안 돌았고,
-    //    targetNumber(=totalIncidents)가 준비되면 → 애니메이션 시작
-    // ======================================================
-    useEffect(() => {
-        if (isVisible && !hasAnimated && targetNumber !== null) {
-            startNumberAnimation(targetNumber);
-            setHasAnimated(true);
-        }
-    }, [isVisible, hasAnimated, targetNumber]);
-
-    // ======================================================
-    // 5) 기타 기능들 (스크롤, 검색)
-    // ======================================================
+    // ===== 3) 아래 Dashboard로 스크롤 =====
     const scrollToDashboard = () => {
         const dashboardSection = document.querySelector('.dashboard-section');
         if (dashboardSection) {
@@ -138,6 +127,7 @@ const Main = () => {
         }
     };
 
+    // ===== 4) 상단 검색 → /fulldata 로 이동 =====
     const handleInitialSearch = () => {
         if (initialSearchQuery.trim()) {
             navigate(`/fulldata?search=${encodeURIComponent(initialSearchQuery)}`);
@@ -153,8 +143,8 @@ const Main = () => {
     return (
         <div className="home-container">
             <MenuBar />
-            
-            {/* Initial Section with Banner Carousel */}
+
+            {/* Banner + 상단 검색 */}
             <div className="initial-section">
                 <Banner />
                 <div className="initial-search-container">
@@ -172,7 +162,7 @@ const Main = () => {
                 </div>
             </div>
 
-            {/* Stats Section with scroll animation */}
+            {/* 숫자 애니메이션 섹션 */}
             <div className={`content stats-section ${isVisible ? 'visible' : ''}`} ref={statsRef}>
                 <h1 className="title">Total Incident Reports in the past week:</h1>
                 <div className="number-container">
@@ -186,9 +176,11 @@ const Main = () => {
                 </div>
             </div>
 
-            {/* 🔹 이제 Dashboard에 statsData도 같이 내려보내기 (2단계에서 사용) */}
+            {/* Dashboard: statsData를 props로 내려보냄 */}
             <Dashboard statsData={statsData} />
-            <Map />
+
+            {/* Map: rawItems(= incidents_front.json.rawItems)를 내려줌 */}
+            <Map incidents={rawItems} />
         </div>
     );
 };

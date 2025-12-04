@@ -1,103 +1,130 @@
 // front/src/pages/fullData.jsx
 // 3단계 – FullData에서 incidents_front.json의 table 사용해서 전체 리스트 + 검색 구현
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Search } from 'lucide-react';
 import MenuBar from '../components/MenuBar';
 
-// URL 쿼리스트링 (?search=...) 쉽게 읽기 위한 작은 훅
+// URL 쿼리 파라미터 읽는 작은 유틸
 const useQuery = () => {
-  const { search } = useLocation();
-  return useMemo(() => new URLSearchParams(search), [search]);
+  return new URLSearchParams(useLocation().search);
 };
 
 const FullData = () => {
+  const navigate = useNavigate();
   const query = useQuery();
+
+  // 메인에서 넘겨준 ?search= 값 초기값으로 사용
   const initialSearch = query.get('search') || '';
 
-  const [rows, setRows] = useState([]);          // incidents_front.json.table
-  const [searchText, setSearchText] = useState(initialSearch);
-  const [loading, setLoading] = useState(true);  // 로딩 상태
-  const [error, setError] = useState(null);      // 에러 메시지용
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+  const [tableData, setTableData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
 
-  // 1) 페이지가 처음 렌더링될 때 incidents_front.json 한 번 fetch
+  // 1) incidents_front.json 에서 table 데이터 가져오기
   useEffect(() => {
-    const loadData = async () => {
+    const fetchData = async () => {
       try {
-        setLoading(true);
-        setError(null);
+        setIsLoading(true);
+        setLoadError(null);
 
+        // 백엔드가 front/public/incidents_front.json 로 만들어주는 파일
+        // → 브라우저에서는 /incidents_front.json 경로로 접근 가능
         const res = await fetch('/incidents_front.json');
         if (!res.ok) {
-          throw new Error(`Failed to load incidents_front.json (status: ${res.status})`);
+          throw new Error('Failed to fetch incidents_front.json');
         }
 
         const data = await res.json();
-        // 우리가 백엔드에서 만든 구조: { totalIncidents, stats, table, rawItems }
-        const table = Array.isArray(data.table) ? data.table : [];
-        setRows(table);
+        // 우리가 backend에서 넣어준 table 배열 사용
+        setTableData(data.table || []);
       } catch (err) {
-        console.error('Error loading incidents_front.json:', err);
-        setError('Failed to load data. Please try again later.');
+        setLoadError(err.message || 'Unknown error');
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
-    loadData();
+    fetchData();
   }, []);
 
-  // 2) 검색 필터: date / type / location 에서 검색어 찾기
-  const filteredRows = useMemo(() => {
-    const q = searchText.trim().toLowerCase();
-    if (!q) return rows;
+  // URL 쿼리가 바뀌면 검색어도 동기화
+  useEffect(() => {
+    setSearchTerm(initialSearch);
+  }, [initialSearch]);
 
-    return rows.filter((row) => {
-      const date = (row.date || '').toLowerCase();
-      const type = (row.type || '').toLowerCase();
-      const location = (row.location || '').toLowerCase();
-      const time = (row.time || '').toLowerCase();
+  // 2) 검색어로 필터링
+  const filteredData = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return tableData;
 
+    return tableData.filter((row) => {
       return (
-        date.includes(q) ||
-        type.includes(q) ||
-        location.includes(q) ||
-        time.includes(q)
+        String(row.id).includes(term) ||
+        (row.date && row.date.toLowerCase().includes(term)) ||
+        (row.type && row.type.toLowerCase().includes(term)) ||
+        (row.time && row.time.toLowerCase().includes(term)) ||
+        (row.location && row.location.toLowerCase().includes(term))
       );
     });
-  }, [rows, searchText]);
+  }, [searchTerm, tableData]);
+
+  // 3) 검색 submit 시 URL 쿼리도 같이 업데이트
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (searchTerm.trim()) {
+      params.set('search', searchTerm.trim());
+    }
+    navigate(`/fulldata?${params.toString()}`, { replace: true });
+  };
 
   return (
     <div className="full-data-page">
       <MenuBar />
 
-      <div className="full-data-container">
+      <div className="full-data-content">
         <h1 className="full-data-title">Full Incident Dataset</h1>
 
-        {/* 검색 박스 */}
-        <div className="full-data-search-container">
-          <input
-            type="text"
-            placeholder="Search by date, type, time, or location"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className="full-data-search-input"
-          />
-        </div>
+        {/* 검색 바 */}
+        <form className="full-data-search-bar" onSubmit={handleSearchSubmit}>
+          <div className="full-data-search-input-wrapper">
+            <Search size={18} className="full-data-search-icon" />
+            <input
+              type="text"
+              placeholder="Search by date, type, location..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="full-data-search-input"
+            />
+          </div>
+          <button type="submit" className="full-data-search-button">
+            Search
+          </button>
+        </form>
 
         {/* 로딩 / 에러 / 테이블 */}
-        {loading && <p className="full-data-info">Loading data...</p>}
-        {error && <p className="full-data-error">{error}</p>}
+        {isLoading && (
+          <p className="full-data-status">Loading data...</p>
+        )}
 
-        {!loading && !error && (
+        {loadError && !isLoading && (
+          <p className="full-data-error">
+            Failed to load data: {loadError}
+          </p>
+        )}
+
+        {!isLoading && !loadError && (
           <>
             <p className="full-data-count">
-              Showing <strong>{filteredRows.length}</strong> of{' '}
-              <strong>{rows.length}</strong> incidents
+              Showing <strong>{filteredData.length}</strong> of{' '}
+              <strong>{tableData.length}</strong> incidents
             </p>
 
-            <div className="table-wrapper">
-              <table className="data-table">
+            <div className="full-data-table-wrapper">
+              <table className="full-data-table">
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -108,22 +135,21 @@ const FullData = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredRows.length === 0 ? (
+                  {filteredData.map((row) => (
+                    <tr key={row.id}>
+                      <td>{row.id}</td>
+                      <td>{row.date}</td>
+                      <td>{row.type}</td>
+                      <td>{row.time}</td>
+                      <td>{row.location}</td>
+                    </tr>
+                  ))}
+                  {filteredData.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="no-results">
-                        No results found for “{searchText}”
+                      <td colSpan={5} className="full-data-empty">
+                        No incidents match your search.
                       </td>
                     </tr>
-                  ) : (
-                    filteredRows.map((row) => (
-                      <tr key={row.id}>
-                        <td>{row.id}</td>
-                        <td>{row.date}</td>
-                        <td>{row.type}</td>
-                        <td>{row.time}</td>
-                        <td>{row.location}</td>
-                      </tr>
-                    ))
                   )}
                 </tbody>
               </table>
