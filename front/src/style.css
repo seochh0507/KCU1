@@ -870,6 +870,46 @@
     line-height: 1.8;
     }
 
+    /* ==================== About Page - Additional Styles ==================== */
+
+    .about-features {
+        list-style: none;
+        padding-left: 0;
+        margin: 20px 0 30px 0;
+    }
+
+    .about-features li {
+        font-family: 'Expletus Sans', cursive;
+        font-size: 20px;
+        color: black;
+        line-height: 1.8;
+        padding-left: 30px;
+        position: relative;
+        margin-bottom: 12px;
+    }
+
+    .about-features li::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #163760;
+        font-size: 28px;
+        font-weight: bold;
+        line-height: 1.4;
+    }
+
+    /* Responsive styles for About features */
+    @media (max-width: 768px) {
+        .about-features li {
+            font-size: 16px;
+            padding-left: 24px;
+        }
+        
+        .about-features li::before {
+            font-size: 24px;
+        }
+    }
+
     /* ==================== Contact Page Styles ==================== */
     .contact-container {
     min-height: 100vh;
