@@ -6,6 +6,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any
 import json
+import re
 
 
 # === 1. 경로 설정 ===
@@ -62,7 +63,49 @@ def parse_iso_datetime(value: str | None) -> datetime | None:
         return datetime.fromisoformat(value)
     except Exception:
         return None
+############################################################
+# URL 안에서 /YYYY-MM-DD/ 패턴 찾아서 datetime으로 바꾸는 정규식
+URL_DATE_RE = re.compile(r"/(\d{4}-\d{2}-\d{2})/")
 
+def get_incident_datetime(inc: Dict[str, Any]) -> datetime | None:
+    """
+    한 incident dict에서 datetime 객체를 뽑는 헬퍼.
+
+    우선순위:
+    1) URL에 들어있는 /YYYY-MM-DD/ (실제 incident 날짜)
+    2) incident_date + incident_time
+    3) incident_datetime
+    """
+
+    # 1) URL에서 날짜 먼저 시도 (실제 사건 날짜)
+    url = inc.get("url") or ""
+    m = URL_DATE_RE.search(url)
+    if m:
+        dt = parse_iso_datetime(m.group(1))
+        if dt is not None:
+            return dt
+
+    # 2) incident_date + incident_time
+    date_str = inc.get("incident_date") or ""
+    time_str = inc.get("incident_time") or ""
+
+    if date_str and time_str:
+        dt = parse_iso_datetime(f"{date_str}T{time_str}")
+        if dt is not None:
+            return dt
+
+    if date_str:
+        dt = parse_iso_datetime(date_str)
+        if dt is not None:
+            return dt
+
+    # 3) incident_datetime (게시 날짜일 가능성이 큼)
+    dt = parse_iso_datetime(inc.get("incident_datetime"))
+    if dt is not None:
+        return dt
+
+    return None
+##############################################################
 
 # === 3. 통계 계산 로직 ===
 
@@ -102,7 +145,15 @@ def compute_stats(incidents: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
     for inc in incidents:
-        iso_str = inc.get("incident_date")
+        # iso_str = inc.get("incident_date")
+        # dt = parse_iso_datetime(iso_str)
+        # if dt is None:
+        #     continue
+
+        # dt = get_incident_datetime(inc)
+
+        # 우선 incident_datetime(날짜+시간), 없으면 incident_date만 사용
+        iso_str = inc.get("incident_datetime") or inc.get("incident_date")
         dt = parse_iso_datetime(iso_str)
         if dt is None:
             continue
@@ -168,16 +219,34 @@ def build_table_rows(incidents: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
     rows: List[Dict[str, Any]] = []
 
-    for idx, inc in enumerate(incidents, start=1):
-        iso_str = inc.get("incident_date")
-        dt = parse_iso_datetime(iso_str)
+    # for idx, inc in enumerate(incidents, start=1):
+    #     dt = get_incident_datetime(inc)
 
-        if dt is not None:
-            date_str = dt.date().isoformat()   # 2025-11-19
-            time_str = dt.strftime("%H:%M")    # 13:45
-        else:
+    #     if dt is not None:
+    #         # URL에서 뽑은 incident 날(예: 2025-11-30)
+    #         date_str = dt.date().isoformat()
+    #         # 시간 정보가 없으면 전부 00:00 이라 의미가 없으니까 그냥 빈칸 처리
+    #         time_str = ""   # dt.strftime("%H:%M") 대신
+    #     else:
+    #         # 그래도 아무 것도 못 뽑으면 원래 텍스트라도 보여주기
+    #         date_str = inc.get("incident_date_text") or ""
+    #         time_str = ""
+
+    #     row = {
+    #         "id": idx,
+    #         "date": date_str,
+    #         "type": inc.get("incident_type") or "N/A",
+    #         "time": time_str,
+    #         "location": inc.get("location") or "",
+    #     }
+    for idx, inc in enumerate(incidents, start=1):
+        # 스크래퍼에서 이미 YYYY-MM-DD / HH:MM 으로 만들어 둔 값 그대로 사용
+        date_str = inc.get("incident_date") or ""
+        time_str = inc.get("incident_time") or ""
+
+        # 혹시 날짜가 비어 있으면 텍스트 버전이라도 사용
+        if not date_str:
             date_str = inc.get("incident_date_text") or ""
-            time_str = ""
 
         row = {
             "id": idx,
@@ -186,6 +255,8 @@ def build_table_rows(incidents: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             "time": time_str,
             "location": inc.get("location") or "",
         }
+
+        
         rows.append(row)
 
     return rows

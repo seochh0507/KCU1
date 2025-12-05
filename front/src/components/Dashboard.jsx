@@ -96,108 +96,100 @@ const Dashboard = ({ statsData, rawItems = [] }) => {
     };
 
     
-    // ✅ 날짜가 바뀌거나 rawItems가 바뀌면, 그 날짜 기준으로 다시 계산
+    // // ✅ 날짜가 바뀌거나 rawItems가 바뀌면, 그 날짜 기준으로 다시 계산
+    // useEffect(() => {
+    //     if (!rawItems || rawItems.length === 0) {
+    //         setIncidentsToday(0);
+    //         setMostCommonType('-');
+    //         setPeakTime('-');
+    //         return;
+    //     }
+
+    //     const filtered = rawItems.filter((item) => {
+    //         const d = getIncidentDate(item);
+    //         if (!d) return false;
+
+    //         // ✅ 그래프와 똑같이 "로컬 날짜" 기준으로 비교
+    //         const incidentYMD = toYMD(d);
+    //         const selectedYMD = toYMD(selectedDate);
+
+
+    //         return incidentYMD === selectedYMD;
+    //     });
+
+    //     // 1) Incidents Today
+    //     setIncidentsToday(filtered.length);
+    //     setHasIncidentsSelectedDate(filtered.length > 0);
+
+    //     if (filtered.length === 0) {
+    //         setMostCommonType('-');
+    //         setPeakTime('-');
+    //         return;
+    //     }
+
+    //     // 2) Most Common Type
+    //     const typeCounts = {};
+    //     // 3) Peak Time (시간대별 카운트)
+    //     const bucketCounts = { MORNING: 0, AFTERNOON: 0, EVENING: 0, NIGHT: 0 };
+
+    //     filtered.forEach((item) => {
+    //         const type = item.incident_type || 'Unknown';
+    //         typeCounts[type] = (typeCounts[type] || 0) + 1;
+
+    //         const d = getIncidentDate(item);
+    //         if (!d) return;           // 날짜 없으면 그냥 건너뛰기
+            
+    //         const bucket = getTimeBucket(d);
+    //         bucketCounts[bucket] += 1;
+    //     });
+
+    //     // 2-1) 최빈 타입 찾기 (가장 많이 나온 1개만 선택)
+    //     let topType = '-';
+    //     let maxTypeCount = 0;
+
+    //     Object.entries(typeCounts).forEach(([type, count]) => {
+    //         if (count > maxTypeCount) {
+    //             maxTypeCount = count;
+    //             topType = type;
+    //         }
+    //     });
+
+    //     setMostCommonType(topType);
+
+
+    //     // 3-1) 최빈 시간대 찾기
+    //     let topBucket = '-';
+    //     let maxBucketCount = 0;
+    //     Object.entries(bucketCounts).forEach(([bucket, count]) => {
+    //         if (count > maxBucketCount) {
+    //             maxBucketCount = count;
+    //             topBucket = bucket;
+    //         }
+    //     });
+    //     setPeakTime(topBucket);
+    // }, [selectedDate, rawItems]);
+    // ✅ 날짜가 바뀌거나 rawItems가 바뀌면, "그 날"의 incident 개수만 다시 계산
     useEffect(() => {
         if (!rawItems || rawItems.length === 0) {
             setIncidentsToday(0);
-            setMostCommonType('-');
-            setPeakTime('-');
+            setHasIncidentsSelectedDate(false);
             return;
         }
 
-        const filtered = rawItems.filter((item) => {
+        const selectedYMD = toYMD(selectedDate);
+
+        const dayItems = rawItems.filter((item) => {
             const d = getIncidentDate(item);
             if (!d) return false;
-
-            // ✅ 그래프와 똑같이 "로컬 날짜" 기준으로 비교
             const incidentYMD = toYMD(d);
-            const selectedYMD = toYMD(selectedDate);
-
-
             return incidentYMD === selectedYMD;
         });
 
-        // 1) Incidents Today
-        setIncidentsToday(filtered.length);
-        setHasIncidentsSelectedDate(filtered.length > 0);
-
-        if (filtered.length === 0) {
-            setMostCommonType('-');
-            setPeakTime('-');
-            return;
-        }
-
-        // 2) Most Common Type
-        const typeCounts = {};
-        // 3) Peak Time (시간대별 카운트)
-        const bucketCounts = { MORNING: 0, AFTERNOON: 0, EVENING: 0, NIGHT: 0 };
-
-        filtered.forEach((item) => {
-            const type = item.incident_type || 'Unknown';
-            typeCounts[type] = (typeCounts[type] || 0) + 1;
-
-            const d = getIncidentDate(item);
-            if (!d) return;           // 날짜 없으면 그냥 건너뛰기
-            
-            const bucket = getTimeBucket(d);
-            bucketCounts[bucket] += 1;
-        });
-
-        // 2-1) 최빈 타입 찾기
-        // let topType = '-';
-        // let maxTypeCount = 0;
-        // Object.entries(typeCounts).forEach(([type, count]) => {
-        //     if (count > maxTypeCount) {
-        //         maxTypeCount = count;
-        //         topType = type;
-        //     }
-        // });
-        // setMostCommonType(topType);
-
-        // 2-1) 최빈 타입 찾기 (동점 추가)
-        const typeEntries = Object.entries(typeCounts);
-
-        // 최댓값 먼저 구하기
-        let maxTypeCount = 0;
-        typeEntries.forEach(([_, count]) => {
-            if (count > maxTypeCount) {
-                maxTypeCount = count;
-            }
-        });
-
-        // 최댓값을 가진 타입들만 모으기
-        const topTypes = typeEntries
-            .filter(([_, count]) => count === maxTypeCount)
-            .map(([type]) => type);
-
-        // 1개면 그 타입, 여러 개면 "Multiple"
-        if (topTypes.length === 1) {
-            setMostCommonType(topTypes[0]);
-        } else {
-            setMostCommonType('Multiple');
-        }
-
-        // 3-1) 최빈 시간대 찾기
-        let topBucket = '-';
-        let maxBucketCount = 0;
-        Object.entries(bucketCounts).forEach(([bucket, count]) => {
-            if (count > maxBucketCount) {
-                maxBucketCount = count;
-                topBucket = bucket;
-            }
-        });
-        setPeakTime(topBucket);
+        setIncidentsToday(dayItems.length);
+        setHasIncidentsSelectedDate(dayItems.length > 0);
     }, [selectedDate, rawItems]);
 
 
-
-    // const handleButtonClick = (buttonName) => {
-    //     if (selectedButton === buttonName) {
-    //         setSelectedButton(null);
-    //     } else {
-    //         setSelectedButton(buttonName);
-    //     }
-    // };
     const handleButtonClick = (buttonName) => {
         setShowCalendar(false);  // 캘린더 닫기
 
@@ -281,7 +273,6 @@ const Dashboard = ({ statsData, rawItems = [] }) => {
         return 'NIGHT'; // 나머지는 NIGHT
     };
 
-    ///////////////////////////////////////////
     const getWeekBounds = (centerDate) => {
         const end = new Date(centerDate);
         end.setHours(0, 0, 0, 0);
@@ -289,6 +280,95 @@ const Dashboard = ({ statsData, rawItems = [] }) => {
         start.setDate(start.getDate() - 6);
         return { start, end };
     };
+
+    ///////////////////////////////////////////////////
+    useEffect(() => {
+    if (!rawItems || rawItems.length === 0) {
+        setMostCommonType('-');
+        setPeakTime('-');
+        return;
+    }
+
+    const { start, end } = getWeekBounds(selectedDate);
+
+    // 7일 범위 안에 있는 사건들만 모으기
+    const inRange = rawItems.filter((item) => {
+        const d = getIncidentDate(item);
+        if (!d) return false;
+        const day = new Date(d);
+        day.setHours(0, 0, 0, 0);
+        return day >= start && day <= end;
+    });
+
+    if (inRange.length === 0) {
+        setMostCommonType('-');
+        setPeakTime('-');
+        return;
+    }
+
+    // --- 1) 타입별 카운트 ---
+    const typeCounts = {};
+    inRange.forEach((item) => {
+        const type = item.incident_type || 'Unknown';
+        typeCounts[type] = (typeCounts[type] || 0) + 1;
+    });
+
+    const typeEntries = Object.entries(typeCounts);
+
+    // 최댓값 구하기
+    let maxTypeCount = 0;
+    typeEntries.forEach(([_, count]) => {
+        if (count > maxTypeCount) {
+            maxTypeCount = count;
+        }
+    });
+
+    // 최댓값을 가진 타입들만 모으기
+    const topTypes = typeEntries
+        .filter(([_, count]) => count === maxTypeCount)
+        .map(([type]) => type);
+
+    if (topTypes.length === 1) {
+        setMostCommonType(topTypes[0]);
+    } else if (topTypes.length > 1) {
+        setMostCommonType('Multiple');
+    } else {
+        setMostCommonType('-');
+    }
+
+    // --- 2) 시간대별 카운트 ---
+    const buckets = { MORNING: 0, AFTERNOON: 0, EVENING: 0, NIGHT: 0 };
+
+    inRange.forEach((item) => {
+        const d = getIncidentDate(item);
+        if (!d) return;
+        const bucket = getTimeBucket(d);
+        buckets[bucket] = (buckets[bucket] || 0) + 1;
+    });
+
+    const bucketEntries = Object.entries(buckets);
+
+    let maxBucketCount = 0;
+    bucketEntries.forEach(([_, count]) => {
+        if (count > maxBucketCount) {
+            maxBucketCount = count;
+        }
+    });
+
+    const topBuckets = bucketEntries
+        .filter(([_, count]) => count === maxBucketCount && count > 0)
+        .map(([bucket]) => bucket);
+
+    if (topBuckets.length === 1) {
+        setPeakTime(topBuckets[0]);
+    } else if (topBuckets.length > 1) {
+        setPeakTime('Multiple');
+    } else {
+        // 7일 동안 아예 사건이 없었던 경우
+        setPeakTime('-');
+    }
+}, [selectedDate, rawItems]);
+    ///////////////////////////////////////////////////
 
     const buildChartData = () => {
         if (!rawItems || rawItems.length === 0 || !selectedButton) return [];
@@ -328,43 +408,12 @@ const Dashboard = ({ statsData, rawItems = [] }) => {
             return data;
         }
 
-        // ② 타입별
+        // ② 타입별 (7일치 합산)
         if (selectedButton === 'type') {
-            // if (!hasIncidentsSelectedDate) return [];   // ⬅ 추가
+            if (inRange.length === 0) return [];
 
-            // const typeCounts = {};
-            // inRange.forEach((item) => {
-            //     const type = item.incident_type || 'Unknown';
-            //     typeCounts[type] = (typeCounts[type] || 0) + 1;
-            // });
-            // return Object.entries(typeCounts).map(([type, count]) => ({
-            //     label: type,
-            //     count,
-            // }));
-            // 선택한 날짜에 해당하는 사건들만 모으기
-            const selectedYMD = toYMD(selectedDate);
-            const dayItems = rawItems.filter((item) => {
-                const d = getIncidentDate(item);
-                if (!d) return false;
-                const incidentYMD = toYMD(d);
-                return incidentYMD === selectedYMD;
-            });
-
-            // 그 날짜에 사건이 0개라면 → 전체 타입 목록으로 0-bar 차트
-            if (dayItems.length === 0) {
-                const allTypes = Array.from(
-                    new Set(rawItems.map((i) => i.incident_type || 'Unknown'))
-                );
-                if (allTypes.length === 0) return [];   // 데이터 자체가 없으면 진짜 빈 차트
-                return allTypes.map((type) => ({
-                    label: type,
-                    count: 0,
-                }));
-            }
-
-            // 그 날짜에 있는 사건들만 타입 카운트
             const typeCounts = {};
-            dayItems.forEach((item) => {
+            inRange.forEach((item) => {
                 const type = item.incident_type || 'Unknown';
                 typeCounts[type] = (typeCounts[type] || 0) + 1;
             });
@@ -375,53 +424,29 @@ const Dashboard = ({ statsData, rawItems = [] }) => {
             }));
         }
 
-        // ③ 시간대별
+        // ③ 시간대별 (7일치 합산)
         if (selectedButton === 'time') {
-            // if (!hasIncidentsSelectedDate) return [];   // ⬅ 추가
-
-            // const buckets = { MORNING: 0, AFTERNOON: 0, EVENING: 0, NIGHT: 0 };
-            // inRange.forEach((item) => {
-            //     const d = getIncidentDate(item);
-            //     if (!d) return;
-            //     const bucket = getTimeBucket(d);
-            //     buckets[bucket] = (buckets[bucket] || 0) + 1;
-            // });
-
-            // ////////////////////////////////////////////////////////////////////////////////////////////
-            // // ⬇⬇ 이 줄 추가
-            // const total = Object.values(buckets).reduce((a, b) => a + b, 0);
-            // if (total === 0) return [];
-            // ///////////////////////////////////////////////////////////////////////////////////////////
-
-            // const order = ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'];
-            // return order.map((b) => ({
-            //     label: b,
-            //     count: buckets[b] || 0,
-            // }));
-            const selectedYMD = toYMD(selectedDate);
-            const dayItems = rawItems.filter((item) => {
-                const d = getIncidentDate(item);
-                if (!d) return false;
-                const incidentYMD = toYMD(d);
-                return incidentYMD === selectedYMD;
-            });
+            if (inRange.length === 0) return [];
 
             const buckets = { MORNING: 0, AFTERNOON: 0, EVENING: 0, NIGHT: 0 };
 
-            dayItems.forEach((item) => {
+            inRange.forEach((item) => {
                 const d = getIncidentDate(item);
                 if (!d) return;
                 const bucket = getTimeBucket(d);
                 buckets[bucket] = (buckets[bucket] || 0) + 1;
             });
 
-            // 사건이 없더라도 MORNING/AFTERNOON/EVENING/NIGHT 축은 항상 보이게
+            const total = Object.values(buckets).reduce((a, b) => a + b, 0);
+            if (total === 0) return [];
+
             const order = ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'];
             return order.map((b) => ({
                 label: b,
                 count: buckets[b] || 0,
             }));
         }
+
 
         return [];
     };
@@ -540,42 +565,6 @@ const Dashboard = ({ statsData, rawItems = [] }) => {
 
             {hasContent && (
 
-                // <div className="dashboard-centered">
-                //     <div className="chart-container-centered">
-                //         {selectedButton === 'incidents' && (
-                //             <div className="chart-content">
-                //                 <div className="chart-header">
-                //                     <h2 className="chart-title">Number of Reported Incidents per Day</h2>
-                                    
-                //                     <button className="calendar-toggle-button" onClick={() => setShowCalendar(!showCalendar)}>
-                //                         <Calendar size={24} />
-                //                     </button>
-                //                 </div>
-                //                 {showCalendar && <CalendarComponent />}
-                                
-                //             </div>
-                //         )}
-
-                //         {chartData.length > 0 ? (
-                //             <ResponsiveContainer width="100%" height={320}>
-                //                 <BarChart data={chartData}>
-                //                     <CartesianGrid strokeDasharray="3 3" />
-                //                     <XAxis dataKey="label" />
-                //                     <YAxis allowDecimals={false} />
-                //                     <Tooltip />
-                //                     <Bar dataKey="count" />
-                //                 </BarChart>
-                //             </ResponsiveContainer>
-                //         ) : (
-                //             <div className="chart-placeholder">
-                //                 <p>No data in this 7-day range.</p>
-                //                 <p className="chart-date-info">
-                //                     Data from {dateRange.start} to {dateRange.end}
-                //                 </p>
-                //             </div>
-                //         )}
-
-                //     </div>
                 <div className="dashboard-centered">
                     <div className="chart-container-centered">
                         <div className="chart-content">

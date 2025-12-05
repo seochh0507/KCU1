@@ -147,7 +147,8 @@ const Main = () => {
 
             {/* Banner + 상단 검색 */}
             <div className="initial-section">
-                <Banner />
+                {/* <Banner /> */}
+                <Banner rawItems={rawItems} />
                 <div className="initial-search-container">
                     <div className="initial-search-box">
                         <Search size={20} className="initial-search-icon" />

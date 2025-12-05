@@ -90,26 +90,38 @@ def extract_detail_fields(soup: BeautifulSoup):
     
     # --- NEW: 최신 구조의 incident_date 추출 ---
     time_tag = soup.select_one("div.field--name-field-incident-date time")
+
     if time_tag:
-        dt_raw = time_tag.get("datetime") or time_tag.get_text(strip=True)
+        dt_attr = (time_tag.get("datetime") or "").strip()
+        text_raw = time_tag.get_text(strip=True)
+
+        # ✅ 화면에 보이는 텍스트(날짜 + 시간)를 기준으로 파싱
+        #    (텍스트가 없을 때만 datetime 속성으로 fallback)
+        dt_raw = text_raw or dt_attr
+
         parsed = parse_date_maybe(dt_raw)
         fields = {
             "location": "",
+            # 👉 파싱용 원본 문자열
             "incident_date": dt_raw,
+            # 👉 화면에 보여줄 예쁜 텍스트
+            "incident_date_text": text_raw,
             "incident_date_parsed": parsed,
             "incident_type": "",
             "case_id": "",
-            "arrested": "Unknown"
+            "arrested": "Unknown",
         }
     else:
         fields = {
             "location": "",
             "incident_date": "",
+            "incident_date_text": "",
             "incident_date_parsed": None,
             "incident_type": "",
             "case_id": "",
-            "arrested": "Unknown"
+            "arrested": "Unknown",
         }
+
     
     try:
         # 모든 h2 헤더 찾기
@@ -138,8 +150,10 @@ def extract_detail_fields(soup: BeautifulSoup):
             if "location" in label_lower or "address" in label_lower:
                 fields["location"] = value
                 
-            elif "incident date" in label_lower or "date" in label_lower:
-                fields["incident_date"] = value
+            # Incident Date 섹션(캘린더 아이콘) – 사람이 볼 텍스트만 사용
+            elif "incident date" in label_lower:
+                if value:
+                    fields["incident_date_text"] = value
                 
             elif "incident type" in label_lower or "type" in label_lower:
                 fields["incident_type"] = value
@@ -150,10 +164,20 @@ def extract_detail_fields(soup: BeautifulSoup):
             elif "arrested" in label_lower or "arrestee" in label_lower:
                 fields["arrested"] = value if value else "Unknown"
         
-        # Incident Date를 datetime으로 파싱 (시간 정보 포함)
-        if fields["incident_date"]:
-            dt = parse_date_maybe(fields["incident_date"])
-            fields["incident_date_parsed"] = dt
+        # # Incident Date를 datetime으로 파싱 (시간 정보 포함)
+        # if fields["incident_date"]:
+        #     dt = parse_date_maybe(fields["incident_date"])
+        #     fields["incident_date_parsed"] = dt
+        # else:
+        #     fields["incident_date_parsed"] = None
+
+        # Incident Date를 datetime으로 파싱 (시간 정보까지 포함해서 시도)
+        # 1순위: Incident Date 섹션 텍스트 (예: "November 30, 2025 – 8:00pm")
+        # 2순위: time 태그에서 가져온 incident_date (날짜만 있을 수도 있음)
+        raw_for_parse = fields.get("incident_date_text") or fields.get("incident_date")
+
+        if raw_for_parse:
+            fields["incident_date_parsed"] = parse_date_maybe(raw_for_parse)
         else:
             fields["incident_date_parsed"] = None
             
@@ -266,7 +290,7 @@ def fetch_detail(driver, wait, detail_url: str):
         
         return {
             "location": fields.get("location", ""),
-            "incident_date_text": fields.get("incident_date", ""),
+            "incident_date_text": fields.get("incident_date_text") or fields.get("incident_date", ""),
             "incident_date": fields.get("incident_date_parsed"),
             "incident_type": fields.get("incident_type", ""),
             "case_id": fields.get("case_id", ""),
@@ -303,6 +327,7 @@ def main():
 
         # 2. 각 상세 페이지 크롤링
         print("\n[STEP 2] Fetching detail pages...")
+
         for idx, item in enumerate(list_items, 1):
             detail_url = item["detail_url"]
             print(f"\n[INFO] ({idx}/{len(list_items)}) Processing:")
@@ -311,18 +336,37 @@ def main():
             try:
                 detail = fetch_detail(driver, wait, detail_url)
 
-                # 날짜 우선순위: 상세 페이지 → 목록 페이지
-                incident_dt = detail.get("incident_date")
-                if not incident_dt and item.get("list_raw_date"):
-                    incident_dt = parse_date_maybe(item["list_raw_date"])
+                # 1) 디테일 Incident Date (날짜+시간) – 화면 표시용
+                detail_dt = detail.get("incident_date")
 
-                # 7일 이내만 포함
-                if not incident_dt:
+                # 2) “가져올지 말지” 판단용 기준 날짜: 원래처럼 list_raw_date 우선
+                filter_dt = None
+                if item.get("list_raw_date"):
+                    filter_dt = parse_date_maybe(item["list_raw_date"])
+
+                # list_raw_date 파싱 실패하면 그때만 detail_dt로 대체
+                if not filter_dt:
+                    filter_dt = detail_dt
+
+                # === 7일 이내 필터 (기준: filter_dt) ===
+                if not filter_dt:
                     print(f"       [SKIP] No date found")
                     continue
-                elif incident_dt < cutoff:
-                    print(f"       [SKIP] Outside date range ({incident_dt.date()})")
+                elif filter_dt < cutoff:
+                    print(f"       [SKIP] Outside date range ({filter_dt.date()})")
                     continue
+
+                # 3) JSON에 기록할 날짜/시간: Incident Date가 있으면 그걸 우선 사용
+                effective_dt = detail_dt or filter_dt
+
+                if effective_dt:
+                    date_str = effective_dt.date().isoformat()   # "2025-11-30"
+                    time_str = effective_dt.strftime("%H:%M")    # "20:00"
+                    iso_str  = effective_dt.isoformat()          # 전체 ISO
+                else:
+                    date_str = ""
+                    time_str = ""
+                    iso_str  = ""
 
                 # 제목 생성: "Case ID + Incident Type"
                 case_id = detail.get("case_id", "").strip()
@@ -337,16 +381,20 @@ def main():
                 else:
                     title = item.get("title", "Untitled").strip()
 
-                # 결과 저장
+                # 최종 결과 저장
                 results.append({
                     "title": title,
                     "case_id": case_id,
                     "incident_type": incident_type,
                     "location": detail.get("location", "").strip(),
-                    "incident_date": incident_dt.isoformat(),
+
+                    "incident_datetime": iso_str,
+                    "incident_date": date_str,
+                    "incident_time": time_str,
+
                     "incident_date_text": detail.get("incident_date_text", ""),
                     "arrested": detail.get("arrested", "Unknown").strip(),
-                    "url": detail_url
+                    "url": detail_url,
                 })
 
                 print(f"       [SUCCESS] {title}")
@@ -367,7 +415,7 @@ def main():
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "days_lookback": 7,
             "count": len(results),
-            "items": results
+            "items": results,
         }
 
         out_path = Path(__file__).resolve().parent / "incidents.json"
@@ -396,6 +444,7 @@ def main():
                 print("\n[INFO] Browser closed")
             except:
                 pass
+
 
 
 if __name__ == "__main__":
