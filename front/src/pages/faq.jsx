@@ -25,43 +25,43 @@ const FAQ = () => {
     const faqData = [
         {
             question: "WHERE DOES THE DATA COME FROM?",
-            answer: "답"
+            answer: "WE USE PUBLIC CRIME AND INCIDENT REPORT DATA SOURCED FROM THE CITY OF MADISON WEBSITE."
         },
         {
             question: "HOW OFTEN IS THE DATA UPDATED?",
-            answer: "답"
+            answer: "THE DATASET IS AUTOMATICALLY UPDATED EVERY DAY."
         },
         {
             question: "CAN I SEARCH FOR SPECIFIC INCIDENTS?",
-            answer: "답"
+            answer: "YES, YOU CAN USE THE SEARCH BOX ON THE MAIN PAGE, OR CLICK \"FULL DATA\" TO ACCESS THE SEARCH PAGE."
         },
         {
-            question: "QUESTION",
-            answer: "답"
+            question: "HOW WAS THE DATA PREPROCESSED?",
+            answer: "WE CLEAN DUPLICATE ENTRIES, STANDARDIZE DATES AND TIMES, GROUP INCIDENTS INTO A FEW MAIN TYPES, AND CONVERT LOCATIONS TO APPROXIMATE MAP COORDINATES FOR MAPPING."
         },
         {
-            question: "QUESTION",
-            answer: "답"
+            question: "WHAT TIME RANGE DOES THIS SITE SHOW?",
+            answer: "THE DASHBOARD AND MAP FOCUS ON INCIDENTS REPORTED IN THE PAST WEEK."
         },
         {
-            question: "QUESTION",
-            answer: "답"
+            question: "DOES THE MAP SHOW EXACT ADDRESSES?",
+            answer: "NO. LOCATIONS ARE SHOWN AT THE BLOCK OR NEIGHBORHOOD LEVEL, NOT AT SPECIFIC HOUSE NUMBERS OR NAMES."
         },
         {
-            question: "QUESTION",
-            answer: "답"
+            question: "CAN I USE THIS SITE FOR EMERGENCIES?",
+            answer: "NO. IF YOU ARE IN DANGER OR NEED HELP, CALL 911 OR YOUR LOCAL EMERGENCY NUMBER IMMEDIATELY."
         },
         {
-            question: "QUESTION",
-            answer: "답"
+            question: "WHY DO SOME AREAS HAVE FEWER MARKERS?",
+            answer: "FEWER MARKERS CAN MEAN FEWER REPORTED INCIDENTS, MISSING LOCATION INFORMATION, OR INCIDENTS OUTSIDE THE MADISON AREA."
         },
         {
-            question: "QUESTION",
-            answer: "답"
+            question: "DO YOU STORE ANY PERSONAL INFORMATION?",
+            answer: "NO. THIS SITE DOES NOT COLLECT NAMES, ADDRESSES, OR PERSONAL IDENTIFIERS FROM USERS OR FROM THE INCIDENT REPORTS."
         },
         {
-            question: "QUESTION",
-            answer: "답"
+            question: "IS MADCRIME AN OFFICIAL CITY WEBSITE?",
+            answer: "NO. MADCRIME IS A STUDENT PROJECT BUILT FOR EDUCATIONAL PURPOSES AND IS NOT AFFILIATED WITH THE CITY OF MADISON OR THE MADISON POLICE DEPARTMENT."
         },
     ];
 

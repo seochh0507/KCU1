@@ -1948,3 +1948,17 @@
 .full-data-content {
     margin-top: 110px; /* 또는 100~140 조절 */
 }
+
+.map-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.map-container {
+    width: 90%;
+    height: 600px;
+    border-radius: 12px;
+    overflow: hidden;
+}

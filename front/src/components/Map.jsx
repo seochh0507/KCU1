@@ -1,103 +1,184 @@
-import React, { useState, useEffect, useRef } from 'react';
+// front/src/components/Map.jsx
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
-const Map = () => {
+const Map = ({ incidents = [] }) => {
     const [selectedIncident, setSelectedIncident] = useState(null);
     const [incidentData, setIncidentData] = useState([]);
+    const [isMapReady, setIsMapReady] = useState(false);
     const mapRef = useRef(null);
     const googleMapRef = useRef(null);
     const markersRef = useRef([]);
 
-    // Police stations data (고정 데이터)
+    // 경찰서 고정 데이터
     const policeStations = [
         {
             id: 1,
             name: 'Madison Police Department - Central District',
             address: '211 S Carroll St, Madison, WI 53703',
             lat: 43.0722,
-            lng: -89.3843
+            lng: -89.3843,
         },
         {
             id: 2,
             name: 'Madison Police Department - North District',
             address: '1554 Northport Dr, Madison, WI 53704',
             lat: 43.1258,
-            lng: -89.3542
-        }
+            lng: -89.3542,
+        },
     ];
 
-    // ✅ 1) incidents_front.json에서 rawItems 불러오기
+    // 🔴 사건 마커 아이콘 (빨간 핀)
+    const createIncidentIcon = () => {
+        const svg = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 24 32">
+                <path d="M12 0C7.03 0 3 4.03 3 9c0 5.25 9 19 9 19s9-13.75 9-19c0-4.97-4.03-9-9-9z"
+                      fill="#dc2626"
+                      stroke="#ffffff"
+                      stroke-width="1.5"/>
+                <circle cx="12" cy="9" r="3" fill="#ffffff"/>
+            </svg>
+        `;
+        return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+    };
+
+    // incidents → 내부 가공
     useEffect(() => {
-        const loadIncidents = async () => {
-            try {
-                const res = await fetch('/incidents_front.json');
-                const data = await res.json();
+        if (!incidents || incidents.length === 0) return;
 
-                // backend/incidents_backend.py 에서 만든 구조:
-                // { totalIncidents, stats, table, rawItems }
-                const rawItems = data.rawItems || [];
+        const mapped = incidents.map((item) => {
+            let formattedDateTime = item.incident_date_text || '';
 
-                const mapped = rawItems.map((item) => {
-                    // incident_date → 보기좋게 포맷
-                    let formattedDateTime = item.incident_date_text || '';
-                    if (item.incident_date) {
-                        try {
-                            const d = new Date(item.incident_date);
-                            formattedDateTime = d.toLocaleString('en-US', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            });
-                        } catch {
-                            // 실패하면 그냥 incident_date_text 사용
-                        }
-                    }
-
-                    return {
-                        id: item.case_id || item.title || Math.random().toString(36),
-                        caseNumber: item.case_id || '',
-                        type: item.incident_type || 'N/A',
-                        location: item.location || '',
-                        dateTime: formattedDateTime,
-                        caseId: item.case_id || '',
-                        arrested: item.arrested || 'Unknown',
-                        link: item.url || '',
-                        // 나중에 백엔드에서 lat/lng 지원하면 그대로 사용 가능
-                        lat: item.lat,
-                        lng: item.lng
-                    };
-                });
-
-                setIncidentData(mapped);
-            } catch (err) {
-                console.error('Failed to load incidents_front.json for Map:', err);
+            if (item.incident_date) {
+                try {
+                    const d = new Date(item.incident_date);
+                    formattedDateTime = d.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    });
+                } catch {}
             }
-        };
 
-        loadIncidents();
+            return {
+                id: item.case_id || item.title || Math.random().toString(36),
+                caseNumber: item.case_id || '',
+                type: item.incident_type || 'N/A',
+                location: item.location || '',
+                dateTime: formattedDateTime,
+                caseId: item.case_id || '',
+                arrested: item.arrested || 'Unknown',
+                link: item.url || '',
+                lat: item.lat,
+                lng: item.lng,
+            };
+        });
+
+        setIncidentData(mapped);
+    }, [incidents]);
+
+    // 주소 → 좌표 변환 (지오코딩)
+    const geocodeAddress = useCallback((geocoder, address) => {
+        return new Promise((resolve) => {
+            let searchAddress = (address || '').trim();
+
+            if (searchAddress && !searchAddress.toLowerCase().includes('madison')) {
+                searchAddress = `${searchAddress}, Madison, WI`;
+            }
+
+            geocoder.geocode(
+                {
+                    address: searchAddress,
+                    bounds: new window.google.maps.LatLngBounds(
+                        new window.google.maps.LatLng(43.0, -89.5),
+                        new window.google.maps.LatLng(43.15, -89.3)
+                    ),
+                },
+                (results, status) => {
+                    if (status === 'OK' && results[0]) {
+                        resolve({
+                            lat: results[0].geometry.location.lat(),
+                            lng: results[0].geometry.location.lng(),
+                        });
+                    } else {
+                        resolve(null);
+                    }
+                }
+            );
+        });
     }, []);
 
-    // ✅ 2) incidentData가 준비되면 Google Maps 초기화 + 마커 찍기
+    // 🔴 사건들 마커 찍기
+    const geocodeAndAddMarkers = useCallback(
+        async (map) => {
+            if (!window.google || !incidentData.length) return;
+
+            const geocoder = new window.google.maps.Geocoder();
+
+            // 기존 마커 제거
+            markersRef.current.forEach((marker) => marker.setMap(null));
+            markersRef.current = [];
+
+            for (let i = 0; i < incidentData.length; i++) {
+                const incident = incidentData[i];
+
+                if (!incident.location) continue;
+
+                try {
+                    let position;
+
+                    if (incident.lat && incident.lng) {
+                        position = { lat: incident.lat, lng: incident.lng };
+                    } else {
+                        position = await geocodeAddress(geocoder, incident.location);
+                        await new Promise((r) => setTimeout(r, 80));
+                    }
+
+                    if (!position) continue;
+
+                    const marker = new window.google.maps.Marker({
+                        position,
+                        map: map,
+                        title: `${incident.type} - ${incident.caseNumber || ''}`,
+                        icon: {
+                            url: createIncidentIcon(),
+                            scaledSize: new window.google.maps.Size(32, 40),
+                            anchor: new window.google.maps.Point(16, 40),
+                        },
+                    });
+
+                    marker.addListener('click', () => {
+                        setSelectedIncident(incident);
+                    });
+
+                    markersRef.current.push(marker);
+                } catch {}
+            }
+        },
+        [incidentData, geocodeAddress]
+    );
+
+    // 🔵 구글 맵 초기화
     useEffect(() => {
         const initMap = () => {
             if (!window.google || !mapRef.current) return;
 
             const map = new window.google.maps.Map(mapRef.current, {
-                center: { lat: 43.0731, lng: -89.4012 }, // Madison 중심
+                center: { lat: 43.0731, lng: -89.4012 },
                 zoom: 12,
                 styles: [
                     {
                         featureType: 'poi',
                         elementType: 'labels',
-                        stylers: [{ visibility: 'off' }]
-                    }
-                ]
+                        stylers: [{ visibility: 'off' }],
+                    },
+                ],
             });
 
             googleMapRef.current = map;
 
-            // 경찰서 마커 찍기
+            // 🔵 경찰서 마커
             policeStations.forEach((station) => {
                 const marker = new window.google.maps.Marker({
                     position: { lat: station.lat, lng: station.lng },
@@ -109,8 +190,8 @@ const Map = () => {
                         fillColor: '#2563eb',
                         fillOpacity: 1,
                         strokeColor: '#ffffff',
-                        strokeWeight: 2
-                    }
+                        strokeWeight: 2,
+                    },
                 });
 
                 const infoWindow = new window.google.maps.InfoWindow({
@@ -119,7 +200,7 @@ const Map = () => {
                             <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">${station.name}</h3>
                             <p style="margin: 0; font-size: 12px; color: #666;">${station.address}</p>
                         </div>
-                    `
+                    `,
                 });
 
                 marker.addListener('click', () => {
@@ -127,11 +208,10 @@ const Map = () => {
                 });
             });
 
-            // 사건 데이터 마커 찍기
-            geocodeAndAddMarkers(map);
+            setIsMapReady(true);
         };
 
-        // Google Maps 스크립트 로드
+        // 스크립트 로딩
         if (!window.google) {
             const script = document.createElement('script');
             script.src =
@@ -139,86 +219,24 @@ const Map = () => {
             script.async = true;
             script.defer = true;
             script.onload = initMap;
+            script.onerror = () => {};
             document.head.appendChild(script);
         } else {
             initMap();
         }
 
-        // cleanup: 기존 마커 제거
         return () => {
             markersRef.current.forEach((marker) => marker.setMap(null));
             markersRef.current = [];
         };
-    }, [incidentData]); // incidentData가 바뀌면 다시 그림
+    }, []);
 
-    // ✅ 3) 주소 geocoding + 사건 마커 찍기
-    const geocodeAndAddMarkers = async (map) => {
-        if (!window.google || !incidentData.length) return;
-
-        const geocoder = new window.google.maps.Geocoder();
-
-        // 기존 마커 제거
-        markersRef.current.forEach((marker) => marker.setMap(null));
-        markersRef.current = [];
-
-        for (const incident of incidentData) {
-            if (!incident.location) continue;
-
-            try {
-                let position;
-
-                // 나중에 백엔드에서 lat/lng 넣어주면 바로 사용
-                if (incident.lat && incident.lng) {
-                    position = { lat: incident.lat, lng: incident.lng };
-                } else {
-                    // 지금은 주소 기반 geocoding
-                    position = await geocodeAddress(geocoder, incident.location);
-                }
-
-                if (!position) continue;
-
-                const marker = new window.google.maps.Marker({
-                    position,
-                    map: map,
-                    title: `${incident.type} - ${incident.caseNumber || ''}`,
-                    icon: {
-                        path: window.google.maps.SymbolPath.CIRCLE,
-                        scale: 12,
-                        fillColor: '#dc2626',
-                        fillOpacity: 1,
-                        strokeColor: '#ffffff',
-                        strokeWeight: 2
-                    },
-                    animation: window.google.maps.Animation.DROP
-                });
-
-                marker.addListener('click', () => {
-                    setSelectedIncident(incident);
-                });
-
-                markersRef.current.push(marker);
-            } catch (error) {
-                console.error(`Error processing incident for map: ${incident.location}`, error);
-            }
+    // 지도 + 데이터 준비되면 사건 마커 찍기
+    useEffect(() => {
+        if (isMapReady && googleMapRef.current && incidentData.length > 0) {
+            geocodeAndAddMarkers(googleMapRef.current);
         }
-    };
-
-    // ✅ 4) 주소 하나 geocoding
-    const geocodeAddress = (geocoder, address) => {
-        return new Promise((resolve, reject) => {
-            geocoder.geocode({ address: address }, (results, status) => {
-                if (status === 'OK' && results[0]) {
-                    resolve({
-                        lat: results[0].geometry.location.lat(),
-                        lng: results[0].geometry.location.lng()
-                    });
-                } else {
-                    console.warn('Geocoding failed:', status, address);
-                    resolve(null); // 실패해도 전체는 멈추지 않도록
-                }
-            });
-        });
-    };
+    }, [isMapReady, incidentData, geocodeAndAddMarkers]);
 
     const closePopup = () => {
         setSelectedIncident(null);
@@ -229,12 +247,16 @@ const Map = () => {
             <div
                 className="map-container"
                 ref={mapRef}
-                style={{ width: '100%', height: '100%' }}
-            >
-                {/* Google Maps will render here */}
-            </div>
+                style={{
+                    width: '100%',
+                    height: '600px',
+                    minHeight: '400px',
+                    backgroundColor: '#e5e7eb',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                }}
+            ></div>
 
-            {/* Incident Detail Popup */}
             {selectedIncident && (
                 <div className="incident-popup">
                     <button className="popup-close" onClick={closePopup}>
@@ -242,7 +264,8 @@ const Map = () => {
                     </button>
                     <h3>
                         {selectedIncident.type}{' '}
-                        {selectedIncident.caseNumber && `- Case #${selectedIncident.caseNumber}`}
+                        {selectedIncident.caseNumber &&
+                            `- Case #${selectedIncident.caseNumber}`}
                     </h3>
 
                     <div className="popup-details">
@@ -291,3 +314,4 @@ const Map = () => {
 };
 
 export default Map;
+
